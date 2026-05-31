@@ -337,6 +337,71 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .hist-what{color:var(--ink)}
 .hist-what b{font-weight:500}
 .hist-note{grid-column:2;font-size:12px;color:var(--ink-2);margin-top:2px}
+
+/* ============ REDISEÑO UX ============ */
+/* barra superior compacta para el cliente */
+.badge{padding:6px 8px;gap:0}
+.badge .t{display:none}
+#refreshBtn .lbl{display:none}
+
+/* tarjetas de ítem: hover + placeholder elegante (adiós recuadro gris) */
+.item{transition:transform .18s, border-color .18s, box-shadow .18s}
+.item:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(42,37,33,.07)}
+.item .ph{flex-direction:column;gap:9px;background:linear-gradient(140deg,var(--paper-2),var(--card));color:var(--ink-3);text-transform:none;letter-spacing:0;padding:0 20px}
+.item .ph .ph-ic{opacity:.45}
+.item .ph .ph-ic svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.3;fill:none}
+.item .ph .ph-nm{font-family:var(--serif);font-style:italic;font-size:14px;line-height:1.25;color:var(--ink-3);max-width:22ch;text-align:center}
+
+/* "incluido": estado sutil, sin bloque terracota lleno */
+.sel-btn.on{background:rgba(154,91,59,.10);border-color:var(--accent);color:var(--accent)}
+.item.sel{box-shadow:inset 0 0 0 1px rgba(154,91,59,.55)}
+
+/* lápiz de edición: aparece al hover en escritorio, dentro de la tarjeta */
+.ed-pinwrap{top:12px;right:12px;transition:opacity .16s}
+@media (hover:hover){
+  .item .ed-pinwrap,.space-wrap .ed-pinwrap,.gal-item .ed-pinwrap{opacity:0}
+  .item:hover .ed-pinwrap,.space-wrap:hover .ed-pinwrap,.gal-item:hover .ed-pinwrap{opacity:1}
+}
+
+/* opción A/B con imagen arriba (mismo alto que un ítem normal) */
+.opt-card2 .body{gap:10px}
+.opt-card2 .opt-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.opt-card2 .opts{display:flex;flex-direction:column;gap:7px;margin-top:auto}
+.opt-card2 .opt-row{padding:8px 11px}
+
+/* navegación por tipos: scroll horizontal + íconos + conteo */
+.pillnav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:5px;gap:7px}
+.pillnav::-webkit-scrollbar{display:none}
+.pill{flex:none;display:inline-flex;align-items:center;gap:7px;padding:9px 14px}
+.pill .pico{display:inline-flex}
+.pill .pico svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.6;fill:none}
+.pill .pcount{font-family:var(--mono);font-size:10px;opacity:.55;font-variant-numeric:tabular-nums}
+.pill.on .pcount{opacity:.85}
+
+/* room cards: portada + estado + agrupadas por nivel */
+.level-head{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin:30px 0 14px;display:flex;align-items:center;gap:12px}
+.level-head:first-of-type{margin-top:4px}
+.level-head::after{content:"";flex:1;height:1px;background:var(--line)}
+.space-card{padding:0;overflow:hidden;transition:transform .18s, border-color .18s, box-shadow .18s}
+.space-card:hover{box-shadow:0 12px 32px rgba(42,37,33,.07)}
+.room-cover{aspect-ratio:16/10;background:var(--paper-2);position:relative;overflow:hidden}
+.room-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:.35s}
+.space-card:hover .room-cover img{transform:scale(1.04)}
+.room-cover .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(140deg,var(--paper-2),var(--card));color:var(--ink-3)}
+.room-cover .ph svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.3;fill:none;opacity:.45}
+.room-cover .ph span{font-family:var(--serif);font-style:italic;font-size:14px}
+.room-status{position:absolute;top:12px;left:12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(251,248,242,.92);color:var(--ink-2);border:1px solid var(--line)}
+.room-status.curso{color:var(--green);border-color:rgba(84,114,104,.42)}
+.room-status.todo{color:var(--ink-3)}
+.room-body{padding:16px 18px 18px}
+.room-body .lvl{display:none}
+.room-body h3{font-family:var(--serif);font-weight:380;font-size:21px;margin:0 0 12px;letter-spacing:-.01em}
+.space-card .row{font-size:12.5px}
+
+/* galería: placeholder elegante también */
+.gal-item .ph{flex-direction:column;gap:8px;text-transform:none;letter-spacing:0;color:var(--ink-3);background:linear-gradient(140deg,var(--paper-2),var(--card))}
+.gal-item .ph svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.3;fill:none;opacity:.45}
+.gal-item .ph .ph-nm{font-family:var(--serif);font-style:italic;font-size:13.5px}
 </style>
 </head>
 <body>
@@ -345,7 +410,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     <div class="sp"></div>
     <span id="dz" style="display:flex;gap:8px;align-items:center"></span>
     <button class="badge" id="badge" data-s="snapshot" title="Estado de los datos"><span class="dot"></span><span class="t">Local · snapshot</span></button>
-    <button class="btn" id="refreshBtn"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 4v5h-5"/></svg>Actualizar</button>
+    <button class="btn" id="refreshBtn" title="Actualizar"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 4v5h-5"/></svg><span class="lbl">Actualizar</span></button>
     <button class="btn btn--solid" id="pdfBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg>Exportar PDF</button>
   </div>
 
@@ -487,6 +552,17 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       return u; /* link genérico: el navegador lo carga aunque no traiga .jpg/.png */
     }
     function tbl(k){return Array.isArray(AURUM[k])?AURUM[k]:[];}
+    var PH_IC='<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>';
+    function phName(name){ return '<div class="ph"><span class="ph-ic">'+PH_IC+'</span>'+(name?'<span class="ph-nm">'+esc(name)+'</span>':'')+'</div>'; }
+    function catalogTotal(){ var t=0; ["products","lighting","hardware","equipment","carpentry","finishes"].forEach(function(k){ tbl(k).forEach(function(p){ if(num(p.price)>0) t+=num(p.price)*qn(p.qty); }); }); return t; }
+    function totalM2(){ var t=0; tbl("spaces").forEach(function(s){ String(s.surface||"").replace(/,/g,".").split("+").forEach(function(p){ var n=parseFloat(p); if(!isNaN(n)) t+=n; }); }); return t; }
+    function spaceThumb(name){
+      var r=tbl("renders").filter(function(x){return x.space===name && x.img;})[0]; if(r) return imgUrl(r.img);
+      var keys=["products","lighting","hardware","equipment","carpentry"];
+      for(var i=0;i<keys.length;i++){ var hit=tbl(keys[i]).filter(function(x){return x.space===name && x.img;})[0]; if(hit) return imgUrl(hit.img); }
+      return "";
+    }
+    function spaceStatus(name){ var n=spaceItemCount(name); return n>0 ? {n:n,cls:"curso",label:"En curso"} : {n:0,cls:"todo",label:"Por definir"}; }
     function prodCat(c){return tbl("products").filter(function(p){return p.category===c;});}
     function sectionItems(s){
       if(s.kind==="cat") return prodCat(s.cat);
@@ -591,10 +667,11 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     }
     function renderMetrics(sp,elems,budget){
       var niveles={}; sp.forEach(function(s){niveles[s.level]=1;});
+      var m2=totalM2();
       return '<div class="metrics fade">'+
         '<div class="metric"><p class="k">Espacios</p><p class="v">'+sp.length+'</p></div>'+
         '<div class="metric"><p class="k">Elementos</p><p class="v">'+elems+'</p></div>'+
-        '<div class="metric"><p class="k">Presupuesto</p><p class="v">'+(budget>0?money(budget):"—")+'</p></div>'+
+        '<div class="metric"><p class="k">Superficie</p><p class="v">'+(m2>0?Math.round(m2)+' <small>m²</small>':"—")+'</p></div>'+
         '<div class="metric"><p class="k">Niveles</p><p class="v">'+Object.keys(niveles).length+'</p></div>'+
       '</div>';
     }
@@ -656,21 +733,26 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     /* ---- items grid (agrupa opciones A/B en una sola tarjeta) ---- */
     function prettyGroup(g){ g=String(g||"").replace(/[-_]/g," ").trim(); return g.charAt(0).toUpperCase()+g.slice(1); }
     function optionCard(groupKey, items){
+      var chosen=items.filter(function(p){return isSel(p.id);})[0] || items[0] || {};
+      var hImg=imgUrl(chosen.img);
       var rows=items.map(function(p){
-        var sel=isSel(p.id), img=imgUrl(p.img), priced=num(p.price)>0;
+        var sel=isSel(p.id), priced=num(p.price)>0;
         var sub=[p.brand,p.dims].filter(Boolean).join(" · ");
         var btn='<button class="opt-row'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+
           '<span class="opt-letter">'+esc(p.opcion||"·")+'</span>'+
-          (img?'<span class="opt-thumb" style="background-image:url('+esc(img)+')"></span>':'')+
           '<span class="opt-info"><span class="opt-name">'+esc(p.name||"—")+'</span>'+(sub?'<span class="opt-sub">'+esc(sub)+'</span>':'')+'</span>'+
           '<span class="opt-price">'+(priced?money(p.price):'')+'</span>'+
           '<span class="opt-check"></span>'+
         '</button>';
         return DZ()? '<div class="opt-line">'+btn+pinBtn(idTable(p.id),p.id)+'</div>' : btn;
       }).join("");
-      return '<article class="item opt-card">'+
-        '<div class="opt-card-h"><span class="opt-tag">'+items.length+' opciones · elige una</span><h4>'+esc(prettyGroup(groupKey))+'</h4></div>'+
-        '<div class="opts">'+rows+'</div>'+
+      return '<article class="item opt-card2">'+
+        '<div class="imgwrap" '+(hImg?'data-zoom="'+esc(hImg)+'"':"")+'>'+(hImg?'<img src="'+esc(hImg)+'" alt="'+esc(prettyGroup(groupKey))+'" loading="lazy">':phName(prettyGroup(groupKey)))+'</div>'+
+        '<div class="body">'+
+          '<span class="opt-tag">'+items.length+' opciones · elige una</span>'+
+          '<h4>'+esc(prettyGroup(groupKey))+'</h4>'+
+          '<div class="opts">'+rows+'</div>'+
+        '</div>'+
       '</article>';
     }
     function renderItemsGrid(items){
@@ -687,7 +769,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       var buy=!!BUY_BY_ID[p.id], priced=num(p.price)>0;
       var img=imgUrl(p.img);
       var imgwrap='<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+
-        (img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':'<div class="ph">Sin imagen</div>')+
+        (img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':phName(p.name))+
         (p.opcion?'<span class="opt">Opción '+esc(p.opcion)+'</span>':"")+'</div>';
       var attrs=[]; if(p.material)attrs.push(esc(p.material)); if(p.dims)attrs.push(esc(p.dims));
       var prov=[p.brand,p.sku].filter(Boolean).map(esc).join(" · ");
@@ -728,7 +810,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       return addBtn("carpentry")+'<div class="grid-items fade">'+c.map(function(p){
         var img=imgUrl(p.img), priced=num(p.price)>0, sel=isSel(p.id);
         return '<article class="item'+(sel?" sel":"")+'">'+
-          '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':'<div class="ph">A medida</div>')+'</div>'+pinWrap("carpentry",p.id)+
+          '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':phName(p.name))+'</div>'+pinWrap("carpentry",p.id)+
           '<div class="body"><h4>'+esc(p.name)+'</h4>'+
             '<p class="prov">'+esc(p.space||"")+(p.dims?' · '+esc(p.dims):"")+'</p>'+
             (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
@@ -744,17 +826,27 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
         n+=tbl(k).filter(function(x){return x.space===name;}).length;});
       return n;
     }
+    function roomCard(s){
+      var thumb=spaceThumb(s.name), st=spaceStatus(s.name);
+      var cover='<div class="room-cover">'+
+        (thumb?'<img src="'+esc(thumb)+'" alt="'+esc(s.name)+'" loading="lazy">':'<div class="ph">'+PH_IC+'<span>'+esc(s.name)+'</span></div>')+
+        '<span class="room-status '+st.cls+'">'+esc(st.label)+'</span></div>';
+      var body='<div class="room-body">'+
+        '<h3>'+esc(s.name)+'</h3>'+
+        '<div class="row"><span>Superficie</span><b>'+esc(s.surface||"—")+' m²</b></div>'+
+        '<div class="row"><span>Elementos</span><b>'+st.n+'</b></div>'+
+      '</div>';
+      return '<div class="space-wrap"><button class="space-card" data-space="'+esc(s.name)+'">'+cover+body+'</button>'+pinWrap("spaces",s.name)+'</div>';
+    }
     function renderSpaces(){
-      var sp=tbl("spaces"); if(!sp.length) return emptyNote("Sin espacios cargados");
-      return addBtn("spaces")+'<div class="grid-spaces fade">'+sp.map(function(s){
-        return '<div class="space-wrap"><button class="space-card" data-space="'+esc(s.name)+'">'+
-          '<p class="lvl">'+esc(s.level||"")+'</p>'+
-          '<h3>'+esc(s.name)+'</h3>'+
-          '<div class="row"><span>Superficie</span><b>'+esc(s.surface||"—")+' m²</b></div>'+
-          '<div class="row"><span>Elementos</span><b>'+spaceItemCount(s.name)+'</b></div>'+
-          (num(s.budget)>0?'<div class="row"><span>Presupuesto</span><b>'+money(s.budget)+'</b></div>':'')+
-        '</button>'+pinWrap("spaces",s.name)+'</div>';
-      }).join("")+'</div>';
+      var sp=tbl("spaces"); if(!sp.length) return addBtn("spaces")+emptyNote("Sin espacios cargados");
+      var levels=[], byLevel={};
+      sp.forEach(function(s){ var L=s.level||"Otros"; if(!byLevel[L]){ byLevel[L]=[]; levels.push(L); } byLevel[L].push(s); });
+      var html=addBtn("spaces")+'<div class="fade">';
+      levels.forEach(function(L){
+        html+='<div class="level-head">'+esc(L)+'</div><div class="grid-spaces">'+byLevel[L].map(roomCard).join("")+'</div>';
+      });
+      return html+'</div>';
     }
     function renderDossier(s){
       var name=state.space;
@@ -777,7 +869,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
         if(!g[1].length) return; any=true;
         html+='<div class="grouphead">'+g[0]+' · '+g[1].length+'</div>';
         if(g[2]==="finishes") html+=g[1].map(finRow).join("");
-        else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(function(p){var img=imgUrl(p.img);return '<article class="item"><div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'">':'<div class="ph">A medida</div>')+'</div><div class="body"><h4>'+esc(p.name)+'</h4><p class="attrs">'+esc(p.materials||"")+'</p>'+(p.dims?'<p class="prov">'+esc(p.dims)+'</p>':"")+'</div></article>';}).join("")+'</div>';
+        else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(function(p){var img=imgUrl(p.img);return '<article class="item"><div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'">':phName(p.name))+'</div><div class="body"><h4>'+esc(p.name)+'</h4><p class="attrs">'+esc(p.materials||"")+'</p>'+(p.dims?'<p class="prov">'+esc(p.dims)+'</p>':"")+'</div></article>';}).join("")+'</div>';
         else html+=renderItemsGrid(g[1]);
       });
       if(!any) html+=emptyNote("Aún no hay elementos asignados a este espacio");
@@ -790,7 +882,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       var items=tbl(s.table); if(!items.length) return addBtn(s.table)+emptyNote("Sin imágenes cargadas");
       return addBtn(s.table)+'<div class="gallery fade">'+items.map(function(r,i){
         var img=imgUrl(r.img);
-        return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" alt="'+esc(r.label||r.title||"")+'" loading="lazy">':'<div class="ph">Pendiente</div>')+pinWrap(s.table,i)+
+        return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" alt="'+esc(r.label||r.title||"")+'" loading="lazy">':phName(r.label||r.title||"Pendiente"))+pinWrap(s.table,i)+
           '<div class="cap"><h4>'+esc(r.label||r.title||"—")+'</h4>'+((r.note||r.space)?'<p>'+esc(r.note||r.space)+'</p>':"")+'</div></div>';
       }).join("")+'</div>';
     }
@@ -818,7 +910,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
         return '<div class="sw"><div class="chipc" style="background:'+esc(hex)+'"></div><div class="lab"><h4>'+esc(c.name||"")+'</h4><p>'+esc(hex)+'</p></div></div>';
       }).join("");
       var mats=(md.materials||[]).map(function(m){return '<span class="mat">'+esc(m)+'</span>';}).join("");
-      var tiles=(md.tiles||[]).map(function(t){var img=imgUrl(t.img);return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" loading="lazy">':'<div class="ph">'+esc(t.label||"")+'</div>')+'<div class="cap"><h4>'+esc(t.label||"")+'</h4>'+(t.note?'<p>'+esc(t.note)+'</p>':"")+'</div></div>';}).join("");
+      var tiles=(md.tiles||[]).map(function(t){var img=imgUrl(t.img);return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" loading="lazy">':phName(t.label||""))+'<div class="cap"><h4>'+esc(t.label||"")+'</h4>'+(t.note?'<p>'+esc(t.note)+'</p>':"")+'</div></div>';}).join("");
       return '<div class="fade">'+
         (DZ()?'<button class="ed-add" data-edit="__mood|">'+PEN+' Editar mood & paleta</button>':'')+
         (pal?'<div class="grouphead">Paleta cromática</div><div class="palette">'+pal+'</div>':"")+
@@ -959,7 +1051,14 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     }
     function typeNav(){
       return '<div class="secbar" style="border:none;padding-top:0;margin-bottom:10px"><div class="pillnav">'+
-        TYPES.map(function(s){return '<button class="pill'+(s.key===state.type?" on":"")+'" data-type="'+s.key+'">'+esc(s.label)+'</button>';}).join("")+
+        TYPES.map(function(s){
+          var c=sectionCount(s);
+          return '<button class="pill'+(s.key===state.type?" on":"")+'" data-type="'+s.key+'">'+
+            '<span class="pico"><svg viewBox="0 0 24 24">'+(ICONS[s.key]||"")+'</svg></span>'+
+            esc(s.label)+
+            (c!=null?'<span class="pcount">'+c+'</span>':'')+
+          '</button>';
+        }).join("")+
       '</div></div>';
     }
     function renderTypeContent(key){
