@@ -129,7 +129,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .item h4{font-family:var(--serif);font-weight:440;font-size:17px;margin:0;line-height:1.2}
 .item .prov{font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--ink-2);margin:0}
 .item .attrs{font-size:12.5px;color:var(--ink-2);margin:0;line-height:1.5}
-.item .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
+.item .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
 .item .price{font-family:var(--serif);font-size:18px;font-variant-numeric:tabular-nums}
 .item .price.obra{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 .sel-btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line-2);background:transparent;
@@ -529,7 +529,19 @@ button:focus:not(:focus-visible){outline:none}
 .buymini.is-contact{color:var(--green);border-color:rgba(84,114,104,.45)}
 .buymini.is-contact:hover{border-color:var(--green)}
 .opt-line .buymini{align-self:center}
-.fin-row>div:last-child{display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.fin-act{display:flex;align-items:center;gap:7px;justify-content:flex-end}
+
+/* tarjetas uniformes + acciones ancladas abajo */
+.grid-items{grid-auto-rows:1fr}
+.item{height:100%}
+.item .actions{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.buybtn{margin-top:0}
+
+/* acabados: etiqueta de ubicación */
+.fin-main{display:flex;align-items:center;gap:11px;min-width:0}
+.fin-main>div{min-width:0}
+.fin-tag{flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);border:1px solid rgba(84,114,104,.4);border-radius:999px;padding:4px 9px;white-space:nowrap}
+.obra-tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
 </style>
 </head>
 <body>
@@ -931,8 +943,10 @@ button:focus:not(:focus-visible){outline:none}
           '<h4>'+esc(p.name||"—")+'</h4>'+
           (prov?'<p class="prov">'+prov+'</p>':"")+
           (attrs.length?'<p class="attrs">'+attrs.join(" · ")+'</p>':"")+
-          '<div class="foot">'+priceHtml+selBtn+'</div>'+
-          linkBtn(p,"buy")+
+          '<div class="actions">'+
+            '<div class="foot">'+priceHtml+selBtn+'</div>'+
+            linkBtn(p,"buy")+
+          '</div>'+
         '</div></article>';
     }
 
@@ -947,29 +961,33 @@ button:focus:not(:focus-visible){outline:none}
     function finRow(f){
       var priced=num(f.price)>0, buy=!!BUY_BY_ID[f.id];
       var sel=buy&&isSel(f.id);
+      var loc=f.type?'<span class="fin-tag">'+esc(f.type)+'</span>':'';
       return '<div class="fin-row'+(sel?" sel":"")+'">'+
-        '<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+esc(f.space||"")+' · '+esc(f.finish||"")+'</p></div>'+
+        '<div class="fin-main">'+loc+'<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+[f.space,f.finish].filter(Boolean).map(esc).join(" · ")+'</p></div></div>'+
         '<div class="col">'+esc([f.brand,f.sku].filter(Boolean).join(" · "))+'</div>'+
         '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':'')+'</div>'+
-        '<div>'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+'</div>'+
+        '<div class="fin-act">'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="obra-tag">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+'</div>'+
       '</div>';
     }
 
     /* ---- carpentry ---- */
-    function renderCarpentry(){
-      var c=tbl("carpentry"); if(!c.length) return addBtn("carpentry")+emptyNote("Sin carpintería cargada");
-      return addBtn("carpentry")+'<div class="grid-items">'+c.map(function(p){
-        var img=imgUrl(p.img), priced=num(p.price)>0, sel=isSel(p.id);
-        return '<article class="item'+(sel?" sel":"")+'">'+
-          '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':phName(p.name))+'</div>'+pinWrap("carpentry",p.id)+
-          '<div class="body"><h4>'+esc(p.name)+'</h4>'+
-            '<p class="prov">'+esc(p.space||"")+(p.dims?' · '+esc(p.dims):"")+'</p>'+
-            (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
-            (p.note?'<p class="attrs" style="color:var(--ink-3)">'+esc(p.note)+'</p>':"")+
+    function carpentryCard(p){
+      var img=imgUrl(p.img), priced=num(p.price)>0, sel=isSel(p.id);
+      return '<article class="item'+(sel?" sel":"")+'">'+
+        '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':phName(p.name))+'</div>'+pinWrap("carpentry",p.id)+
+        '<div class="body"><h4>'+esc(p.name||"—")+'</h4>'+
+          ((p.space||p.dims)?'<p class="prov">'+esc(p.space||"")+(p.dims?' · '+esc(p.dims):"")+'</p>':"")+
+          (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
+          (p.note?'<p class="attrs" style="color:var(--ink-3)">'+esc(p.note)+'</p>':"")+
+          '<div class="actions">'+
             '<div class="foot">'+(priced?'<span class="price">'+money(p.price)+'</span><button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="price obra">Por definir</span>')+'</div>'+
             linkBtn(p,"service")+
-          '</div></article>';
-      }).join("")+'</div>';
+          '</div>'+
+        '</div></article>';
+    }
+    function renderCarpentry(){
+      var c=tbl("carpentry"); if(!c.length) return addBtn("carpentry")+emptyNote("Sin carpintería cargada");
+      return addBtn("carpentry")+'<div class="grid-items">'+c.map(carpentryCard).join("")+'</div>';
     }
 
     /* ---- spaces + dossier ---- */
@@ -1037,7 +1055,7 @@ button:focus:not(:focus-visible){outline:none}
         html+='<div class="grouphead">'+g[0]+' · '+g[1].length+'</div>';
         if(g[2]==="finishes") html+=g[1].map(finRow).join("");
         else if(g[2]==="gallery") html+='<div class="gallery">'+g[1].map(function(r){var im=imgUrl(r.img);return '<div class="gal-item"><img src="'+esc(im)+'" data-zoom="'+esc(im)+'" alt="'+esc(r.label||"")+'" loading="lazy"><div class="cap"><h4>'+esc(r.label||"—")+'</h4>'+(r.note?'<p>'+esc(r.note)+'</p>':"")+'</div></div>';}).join("")+'</div>';
-        else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(function(p){var img=imgUrl(p.img);return '<article class="item"><div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'">':phName(p.name))+'</div><div class="body"><h4>'+esc(p.name)+'</h4><p class="attrs">'+esc(p.materials||"")+'</p>'+(p.dims?'<p class="prov">'+esc(p.dims)+'</p>':"")+linkBtn(p,"service")+'</div></article>';}).join("")+'</div>';
+        else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(carpentryCard).join("")+'</div>';
         else html+=renderItemsGrid(g[1]);
       });
       if(!any) html+=emptyNote("Aún no hay elementos asignados a este espacio");
@@ -1318,7 +1336,8 @@ button:focus:not(:focus-visible){outline:none}
     };
     var NUMF={price:1,qty:1,budget:1};
     var TAREA={note:1,walls:1,materials:1};
-    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra o contacto (URL / WhatsApp / correo)",img:"Imagen (link de Drive)",type:"Tipo (Piso / Muro / Techo)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título"};
+    var SELECTF={type:["Piso","Muro","Techo","Cubierta"]};
+    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra o contacto (URL / WhatsApp / correo)",img:"Imagen (link de Drive)",type:"Ubicación (Piso / Muro / Techo / Cubierta)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título"};
 
     function DZ(){ return !!state.designer; }
     function assign(t){ for(var i=1;i<arguments.length;i++){ var s=arguments[i]; if(s) for(var k in s) if(Object.prototype.hasOwnProperty.call(s,k)) t[k]=s[k]; } return t; }
@@ -1368,7 +1387,8 @@ button:focus:not(:focus-visible){outline:none}
       var sc=SCHEMA[ED.table], rec=ED.rec;
       var body=sc.f.map(function(f){
         var v=rec[f]==null?"":rec[f], lab=FLABEL[f]||f, inp;
-        if(f in TAREA) inp='<textarea data-f="'+f+'" rows="2">'+esc(v)+'</textarea>';
+        if(f in SELECTF) inp='<select data-f="'+f+'"><option value="">—</option>'+SELECTF[f].map(function(o){return '<option'+(String(v)===o?' selected':'')+'>'+esc(o)+'</option>';}).join("")+'</select>';
+        else if(f in TAREA) inp='<textarea data-f="'+f+'" rows="2">'+esc(v)+'</textarea>';
         else inp='<input data-f="'+f+'" type="'+((f in NUMF)?"number":"text")+'" value="'+esc(v)+'"'+(f==="id"&&ED.key!=null?' readonly style="opacity:.55"':'')+'>';
         return '<label class="ed-row"><span>'+esc(lab)+'</span>'+inp+'</label>';
       }).join("");
