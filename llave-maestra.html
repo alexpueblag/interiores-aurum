@@ -291,12 +291,59 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .opt-price{font-family:var(--serif);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .opt-check{flex:none;width:18px;height:18px;border-radius:50%;border:1px solid var(--line-2)}
 .opt-row.on .opt-check{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--card)}
+
+/* ---- modo diseñadora ---- */
+.dz-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2);background:transparent;cursor:pointer;transition:.18s}
+.dz-pill:hover{border-color:var(--ink-2);color:var(--ink)}
+.dz-pill.on{background:var(--green);border-color:var(--green);color:#fff}
+.dz-pill svg{width:13px;height:13px;stroke:currentColor;stroke-width:1.7;fill:none}
+.item,.gal-item{position:relative}
+.ed-pinwrap{position:absolute;top:10px;right:10px;z-index:5}
+.ed-pin{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);background:rgba(251,248,242,.92);color:var(--ink-2);cursor:pointer;transition:.16s;padding:0}
+.ed-pin:hover{border-color:var(--green);color:var(--green)}
+.ed-pin svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.fin-row .ed-pin,.opt-line .ed-pin{width:26px;height:26px;border-radius:6px}
+.opt-line{display:flex;gap:6px;align-items:stretch}
+.opt-line .opt-row{flex:1}
+.opt-line .ed-pin{align-self:center}
+.space-wrap{position:relative}
+.ed-add{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);border:1px dashed var(--line-2);background:transparent;border-radius:var(--r-sm);padding:9px 14px;cursor:pointer;transition:.16s;margin:0 0 14px}
+.ed-add:hover{border-color:var(--green);background:var(--card)}
+.ed-mood-pin{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);border:1px solid var(--line-2);background:transparent;border-radius:999px;padding:5px 11px;cursor:pointer;margin-left:10px;vertical-align:middle}
+.ed-mood-pin:hover{border-color:var(--green)}
+
+/* ---- editor modal ---- */
+.editor{position:fixed;inset:0;z-index:95;background:rgba(28,24,20,.55);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.editor.on{display:flex}
+.ed-panel{background:var(--paper);border:1px solid var(--line-2);border-radius:14px;width:100%;max-width:560px;box-shadow:0 30px 80px rgba(0,0,0,.3);overflow:hidden;margin:auto}
+.ed-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
+.ed-head h3{font-family:var(--serif);font-weight:380;font-size:22px;margin:0;flex:1}
+.ed-x{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-2);background:transparent;color:var(--ink-2);font-size:18px;cursor:pointer;line-height:1}
+.ed-x:hover{border-color:var(--ink-2);color:var(--ink)}
+.ed-body{padding:18px 22px;max-height:58vh;overflow-y:auto}
+.ed-row{display:block;margin-bottom:14px}
+.ed-row>span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.ed-row input,.ed-row textarea,.ed-row select{width:100%;font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:9px 11px;outline:none;transition:.16s}
+.ed-row input:focus,.ed-row textarea:focus,.ed-row select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(84,114,104,.12)}
+.ed-row textarea{resize:vertical;line-height:1.5}
+.ed-hint{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin:-8px 0 14px;letter-spacing:.02em}
+.ed-foot{display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--line);background:var(--card)}
+.ed-foot .sp{flex:1}
+.ed-state{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--green)}
+.ed-state.warn{color:var(--err)}
+.hist{display:flex;flex-direction:column;gap:0}
+.hist-row{display:grid;grid-template-columns:120px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:baseline}
+.hist-when{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.02em}
+.hist-what{color:var(--ink)}
+.hist-what b{font-weight:500}
+.hist-note{grid-column:2;font-size:12px;color:var(--ink-2);margin-top:2px}
 </style>
 </head>
 <body>
   <div class="topbar" id="topbar" style="display:none">
     <div class="brand" id="brand" data-action="to-landing" style="cursor:pointer"></div>
     <div class="sp"></div>
+    <span id="dz" style="display:flex;gap:8px;align-items:center"></span>
     <button class="badge" id="badge" data-s="snapshot" title="Estado de los datos"><span class="dot"></span><span class="t">Local · snapshot</span></button>
     <button class="btn" id="refreshBtn"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 4v5h-5"/></svg>Actualizar</button>
     <button class="btn btn--solid" id="pdfBtn"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg>Exportar PDF</button>
@@ -310,6 +357,20 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
   <div class="lb" id="lb"><button class="x" id="lbx" aria-label="Cerrar">&times;</button><img id="lbimg" alt=""></div>
   <div id="printDoc"></div>
 
+  <div class="editor" id="editor">
+    <div class="ed-panel">
+      <div class="ed-head"><h3 id="ed-title">Editar</h3><button class="ed-x" data-ed="cancel" aria-label="Cerrar">&times;</button></div>
+      <div class="ed-body" id="ed-body"></div>
+      <div class="ed-foot">
+        <span class="ed-state" id="ed-state"></span>
+        <div class="sp"></div>
+        <button class="btn" data-ed="del" id="ed-del" style="border-color:rgba(154,59,48,.5);color:var(--err)">Eliminar</button>
+        <button class="btn" data-ed="cancel">Cerrar</button>
+        <button class="btn btn--solid" data-ed="save" id="ed-save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
   <script id="aurum-snapshot">window.AURUM = {"meta":{"studio":"Aurum Arquitectos","document":"Llave Maestra","subtitle":"Programa de Interiores","client":"Familia Navarro Muñoz","lot":"Lote 8 · Mza 269 · Villa Fraterna","development":"Las Riberas","city":"Hermosillo, Sonora · México","email":"proyectos@aurumarquitectos.com","phone":"+52 662 200 0340","version":"I","date":46172,"code":"RNM · 01","currency":"MXN","locale":"es-MX","logo":"data:image/png;base64,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","heroRender":"https://drive.google.com/file/d/1OHtqzXXpkSR0OxhTRh9MOTV2E09fh7SB/view?usp=drive_link","heroRenderPos":"center 66%"},"concept":{"sectionCode":"01.A","style":"Hygge transicional","statement":"El diseño de interiores de este proyecto se concibió bajo los principios de calidad, confort y conexión con el entorno. La propuesta se fundamenta en colores neutros y saturados en contraste con mobiliario claro y una abundante iluminación natural, aprovechando al máximo la vista privilegiada desde la zona privada hacia el exterior a través de ventanales de doble altura.","body":["La naturaleza, el cielo y la vegetación se convierten en los protagonistas, resaltados mediante una paleta interior neutra y cálida. Las líneas rectas y la base neutra, junto con el uso intencional de texturas, aportan calidez y equilibrio incluso en espacios amplios y de gran altura.","El estilo adoptado es un Hygge transicional con matices de modernismo clásico, al que en áreas privadas se suma un carácter regional, como una evolución armónica del concepto. La arquitectura interior se desarrolla con líneas limpias y claras, buscando que cada rincón abrace al usuario y transmita la sensación de estar en el corazón de la casa."],"definition":"Fusión entre el estilo Hygge escandinavo —centrado en la calidez, simplicidad y bienestar— y el estilo transicional, que mezcla elementos clásicos y contemporáneos para lograr equilibrio y atemporalidad.","pillars":[{"t":"Paleta neutra y cálida","d":"Blancos, beige, verdes y tonos tierra como base."},{"t":"Materiales naturales","d":"Madera, textiles suaves, piedra y fibras vegetales."},{"t":"Mobiliario equilibrado","d":"Líneas limpias, texturas clásicas y detalles escultóricos."},{"t":"Iluminación cálida y abundante","d":"Prioriza la luz natural y luminarias sencillas."},{"t":"Texturas ricas","d":"Alfombras, cojines y tapizados que aportan confort."},{"t":"Equilibrio visual","d":"Minimalismo con toques ornamentales: acogedor y sofisticado."}]},"spaces":[{"name":"Cocina + Pantry","level":"Planta Baja","surface":"15.55 + 8.32","dims":"3.14×4.95 + 4.03×2.06","floor":"Mármol","ceiling":"Sencilla · 2.70 m","walls":"Chapa de madera · Pintura vinílica","budget":320000},{"name":"Sala + Comedor","level":"Planta Baja","surface":"18.81 + 17.01","dims":"4.60×4.10 + 3.43×4.95","floor":"Mármol","ceiling":"Doble altura","walls":"Pintura vinílica · Ventanales · Chapa de madera","budget":410000},{"name":"Recámara Principal","level":"Planta Baja","surface":"40.86","dims":"3.98×4.10","floor":"Piso de ingeniería","ceiling":"Sencilla · 3.00 m","walls":"Pintura vinílica · Papel tapiz · Chapa de madera","budget":280000},{"name":"Baño Principal","level":"Planta Baja","surface":"12.40","dims":"2.63×4.72","floor":"Mármol","ceiling":"Sencilla · 3.00 m","walls":"Pintura vinílica · Azulejo","budget":190000},{"name":"Sala Privada","level":"Planta Baja","surface":"16.20","dims":"3.90×4.15","floor":"Piso de ingeniería","ceiling":"Sencilla · 3.00 m","walls":"Pintura vinílica","budget":150000},{"name":"Medio Baño","level":"Planta Baja","surface":"2.67","dims":"1.43×1.55","floor":"Mármol","ceiling":"Sencilla · 3.00 m","walls":"Pintura vinílica","budget":60000},{"name":"Cuarto de Lectura","level":"Planta Alta","surface":"13.29","dims":"2.78×4.10","floor":"Piso de ingeniería","ceiling":"Sencilla · 3.50 m","walls":"Pintura vinílica","budget":95000},{"name":"Recámara Secundaria","level":"Planta Alta","surface":"32.89","dims":"3.98×6.65 + 1.43×2.40","floor":"Piso de ingeniería","ceiling":"Sencilla · 3.50 m","walls":"Pintura vinílica","budget":165000},{"name":"Recámara Multiusos","level":"Planta Alta","surface":"33.95 + 4.52","dims":"4.10×5.80 + 2.33×5.10","floor":"Piso de ingeniería","ceiling":"Sencilla · 3.50 m","walls":"Pintura vinílica","budget":175000},{"name":"Lavandería","level":"Planta Alta","surface":"14.50","dims":"2.33×5.25","floor":"Mármol","ceiling":"Sencilla · 3.50 m","walls":"Pintura vinílica","budget":70000},{"name":"Terraza + Balcón","level":"Planta Baja + Alta","surface":"19.98 + 14.36","dims":"4.95×3.83 + 6.65×2.15","floor":"Mármol","ceiling":"Aparente · 4.80 m","walls":"Pintura vinílica · Piedra braza","budget":210000}],"mood":{"sectionCode":"02","palette":[{"name":"Plum Black Absence","hex":"#fbf5f5ff"},{"name":"Warm Shadow","hex":"#ddc5abff"},{"name":"Green Wharf","hex":"#547268ff"},{"name":"Kentucky Grass","hex":"#94b499ff"},{"name":"Jacaranda Brown","hex":"#725d54ff"},{"name":"Mushroom Basket","hex":"#d5ccbfff"}],"materials":["Encino natural","Lino crudo","Concreto Perla","FIrenze Striato","Latón cepillado","Piedra braza","Terracota"],"tiles":[{"label":"Sala de doble altura","note":"Render principal","span":"tall","img":"https://drive.google.com/file/d/1OHtqzXXpkSR0OxhTRh9MOTV2E09fh7SB/view?usp=drive_link"},{"label":"Detalle de chapa de madera","note":"Textura","span":"wide","img":"https://drive.google.com/file/d/1V1r2GPPo34YG-onSIXXc6IxviTlkN9nn/view?usp=drive_link"},{"label":"Celosía Perla Mate","note":"Textura","span":"","img":"https://drive.google.com/file/d/17fx6kfLnVSl8yWN1L56xbx6_XUYokdAf/view?usp=drive_link"},{"label":"Recámara principal","note":"Ambiente","span":"","img":"https://drive.google.com/file/d/1kDfLZ_4AdjMEtsmwI4PlezySy-MmrIoN/view?usp=drive_link"},{"label":"Escalera","note":"Escultura","span":"tall","img":"https://drive.google.com/file/d/1PpJkHYHgJgOVV7P0S6GlBsGEQKFptiRP/view?usp=drive_link"},{"label":"Textiles & bouclé","note":"Cercanía","span":"","img":"https://drive.google.com/file/d/1o5fdnxq5Voqj7mEYSavYA1tI2S6SGdcs/view?usp=drive_link"}]},"products":[{"id":"p01","name":"Banco de isla con respaldo","category":"Mobiliario","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"banco-cocina","opcion":"A"},{"id":"p02","name":"Banco de isla sin respaldo","category":"Mobiliario","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"banco-cocina","opcion":"B"},{"id":"p03","name":"Canastas Pantry","category":"Decoración","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p04","name":"Mason Jars Pantry","category":"Decoración","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p05","name":"Jarrón Cocina","category":"Decoración","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p06","name":"Corcho Pantry","category":"Decoración","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p07","name":"Repisas para área de mascota","category":"Decoración","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p08","name":"Paquete de Decoración Cocina + Pantry","category":"Decoración","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p09","name":"Sofá modular · 5 plazas","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"sofá-sala","opcion":"A"},{"id":"p10","name":"Sofá modular · 5 plazas","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"sofá-sala","opcion":"B"},{"id":"p11","name":"Silla de Acento","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"silla-sala","opcion":"A"},{"id":"p12","name":"Silla de Acento","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"silla-sala","opcion":"B"},{"id":"p13","name":"Mesa de Centro","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"mesa-sala","opcion":"A"},{"id":"p14","name":"Mesa de Centro","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"mesa-sala","opcion":"B"},{"id":"p15","name":"Tapete","category":"Textiles","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p16","name":"Cortina de lino a medida · french","category":"Textiles","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p17","name":"Paquete de Decoración Sala","category":"Decoración","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p18","name":"Mesa de Comedor","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"mesa-comedor","opcion":"A"},{"id":"p19","name":"Mesa de Comedor","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"mesa-comedor","opcion":"B"},{"id":"p20","name":"Silla de Comedor","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"silla-comedor","opcion":"A"},{"id":"p21","name":"Silla de Comedor","category":"Mobiliario","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":"","grupo":"silla-comedor","opcion":"B"},{"id":"p22","name":"Paquete de Decoración Comedor","category":"Decoración","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"p23","name":"Sofá modular Linho · 3 plazas","category":"Mobiliario","space":"Sala + Comedor","brand":"Mobica","sku":"MB-LIN-3P","material":"Lino crudo · estructura de roble","dims":"240 × 95 × 72 cm","price":52400,"qty":1,"url":"https://mobica.com","img":""},{"id":"p24","name":"Mesa de comedor en roble macizo","category":"Mobiliario","space":"Sala + Comedor","brand":"Taller Cravan","sku":"TC-MES-220","material":"Roble natural aceitado","dims":"220 × 100 × 75 cm","price":38900,"qty":1,"url":"https://tallercravan.com","img":""},{"id":"p25","name":"Silla Wishbone · juego de 6","category":"Mobiliario","space":"Sala + Comedor","brand":"Carl Hansen & Søn","sku":"CH24-OAK","material":"Roble jabonado · asiento de cuerda","dims":"55 × 51 × 76 cm","price":64800,"qty":6,"url":"https://carlhansen.com","img":""},{"id":"p26","name":"Tapete de lana anudado a mano","category":"Textiles","space":"Sala Privada","brand":"Taller Mara","sku":"TM-RUG-300","material":"Lana natural sin teñir","dims":"300 × 200 cm","price":28500,"qty":1,"url":"","img":""},{"id":"p27","name":"Cabecera tapizada en bouclé","category":"Mobiliario","space":"Recámara Principal","brand":"Mobica","sku":"MB-CAB-180","material":"Bouclé arena","dims":"180 × 130 cm","price":19900,"qty":1,"url":"https://mobica.com","img":""},{"id":"p28","name":"Buró de nogal · 2 cajones","category":"Mobiliario","space":"Recámara Principal","brand":"Taller Cravan","sku":"TC-BUR-02","material":"Nogal macizo","dims":"55 × 40 × 50 cm","price":12400,"qty":2,"url":"https://tallercravan.com","img":""},{"id":"p29","name":"Poltrona de lectura en cuero","category":"Mobiliario","space":"Cuarto de Lectura","brand":"Tapizados Sur","sku":"TS-POL-01","material":"Cuero camel · base de roble","dims":"78 × 82 × 90 cm","price":31700,"qty":1,"url":"","img":""},{"id":"p30","name":"Mesa de centro de travertino","category":"Mobiliario","space":"Sala Privada","brand":"Atra","sku":"ATR-TRV-120","material":"Travertino romano","dims":"120 × 60 × 35 cm","price":42300,"qty":1,"url":"https://atra.mx","img":""},{"id":"p31","name":"Espejo redondo con marco de latón","category":"Decoración","space":"Baño Principal","brand":"La Metropolitana","sku":"LM-ESP-80","material":"Latón cepillado","dims":"Ø 80 cm","price":8900,"qty":1,"url":"https://lametropolitana.mx","img":""},{"id":"p32","name":"Cortina de lino a medida · blackout","category":"Textiles","space":"Recámara Principal","brand":"Casa Textil","sku":"CT-COR-LIN","material":"Lino belga · forro blackout","dims":"A medida","price":15600,"qty":1,"url":"","img":""}],"lighting":[{"id":"l01","name":"Candil de isla artesanal","category":"Iluminación","space":"Cocina + Pantry","brand":"","sku":"","material":"Cerámica blanca","dims":"","price":0,"qty":3,"url":"","img":""},{"id":"l02","name":"Arbotante circular","category":"Iluminación","space":"Cocina + Pantry","brand":"","sku":"","material":"Latón","dims":"","price":0,"qty":2,"url":"","img":""},{"id":"l03","name":"Spot luz neutra","category":"Iluminación","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":4,"url":"","img":""},{"id":"l04","name":"","category":"Iluminación","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"l05","name":"","category":"Iluminación","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"l06","name":"","category":"Iluminación","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"l07","name":"","category":"Iluminación","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"l08","name":"","category":"Iluminación","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"l09","name":"","category":"Iluminación","space":"Sala + Comedor","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"l10","name":"Aplique de muro en lino","category":"Iluminación","space":"Recámara Principal","brand":"Astep","sku":"AST-WL-22","material":"Latón · pantalla de lino","dims":"Ø 22 cm","price":6800,"qty":2,"url":"https://astep.design","img":""},{"id":"","name":"Lámpara de piso tipo arco","category":"Iluminación","space":"Sala Privada","brand":"Flos","sku":"FL-ARC-01","material":"Acero · base de mármol","dims":"H 210 cm","price":38500,"qty":1,"url":"https://flos.com","img":""},{"id":"","name":"Riel de spots empotrados","category":"Iluminación","space":"Sala Privada","brand":"Lumens","sku":"LM-TRK-6","material":"Aluminio negro mate","dims":"120 cm · 6 luces","price":9200,"qty":2,"url":"","img":""},{"id":"","name":"Candil de comedor esférico","category":"Iluminación","space":"Sala Privada","brand":"Pulpo","sku":"PU-SPH-9","material":"Vidrio soplado · latón","dims":"Ø 90 cm","price":54200,"qty":1,"url":"https://pulpoproducts.com","img":""},{"id":"","name":"Lámpara de lectura abatible","category":"Iluminación","space":"Cuarto de Lectura","brand":"Marset","sku":"MS-RD-01","material":"Aluminio lacado","dims":"Brazo 60 cm","price":12900,"qty":1,"url":"","img":""}],"hardware":[{"id":"h01","name":"Jaladera tipo botón","category":"Herrajes","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"https://tradisa.com","img":""},{"id":"h02","name":"Jaladera tipo barra","category":"Herrajes","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"https://hafele.com","img":""},{"id":"h03","name":"Barra de tope repisas","category":"Herrajes","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"h04","name":"Ganchos pet zone","category":"Herrajes","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"https://blum.com","img":""},{"id":"h05","name":"","category":"Herrajes","space":"Cocina + Pantry","brand":"","sku":"","material":"","dims":"","price":0,"qty":0,"url":"","img":""},{"id":"h06","name":"Jaladera tipo barra","category":"Herrajes","space":"Cocina + Pantry","brand":"Tradisa","sku":"TR-JL-30","material":"Latón cepillado","dims":"30 cm","price":480,"qty":24,"url":"https://tradisa.com","img":""},{"id":"h07","name":"Bisagra oculta soft-close","category":"Herrajes","space":"General","brand":"Häfele","sku":"HF-BIS-SC","material":"Acero niquelado","dims":"110°","price":120,"qty":40,"url":"https://hafele.com","img":""},{"id":"h08","name":"Manija de puerta minimalista","category":"Herrajes","space":"Recámara Principal","brand":"Tradisa","sku":"TR-MN-02","material":"Latón mate","dims":"Roseta Ø 50","price":950,"qty":6,"url":"","img":""},{"id":"h09","name":"Corredera de cajón push","category":"Herrajes","space":"Cocina + Pantry","brand":"Blum","sku":"BL-RL-500","material":"Acero","dims":"50 cm","price":680,"qty":18,"url":"https://blum.com","img":""},{"id":"h10","name":"Toallero / colgador de baño","category":"Herrajes","space":"Baño Principal","brand":"Tradisa","sku":"TR-TP-01","material":"Latón","dims":"40 cm","price":320,"qty":4,"url":"","img":""}],"equipment":[{"id":"e01","name":"Campana de extracción","category":"Equipamiento","space":"Cocina + Pantry","brand":"TECNOLAM","sku":"ALTAIR75.AC","material":"Acero inoxidable","dims":"75x28.8x17.5","price":3792,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/campana-plana-tecnolam-altair75.ac-de-acero-inoxidable/1160056688?skuid=1160056688","img":"https://drive.google.com/file/d/1ImPmPi6WhQ70ndAqoji9j5tkhI0SAgTl/view?usp=drive_link"},{"id":"e02","name":"Parrilla de Gas LP · 5 zonas","category":"Equipamiento","space":"Cocina + Pantry","brand":"Io Mabe","sku":"PIO75KMNR0","material":"Vidrio Templado Negro","dims":"76x51.8","price":12809,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/parrilla-a-gas-lp-empotrable-io-mabe/1164277921?skuid=1164277921","img":"https://drive.google.com/file/d/16QUAt8Tv84dHkHxiTQGsiEf6hmn-LKbI/view?usp=drive_link"},{"id":"e03","name":"Horno empotrable Gas 60L","category":"Equipamiento","space":"Cocina + Pantry","brand":"Io Mabe","sku":"IO6056HGWI1","material":"Cristal ahumado","dims":"59.3x54.3x59.5","price":13650,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/horno-a-gas-lp-io-mabe-io6056hgwi1-capacidad-60-l/1144040429?skuid=1144040429","img":"https://drive.google.com/file/d/1zjJ_f8fH52jFiCTfoSWrQzhxBaoeIgZ8/view?usp=drive_link"},{"id":"e04","name":"Horno microondas 1.1 pies","category":"Equipamiento","space":"Cocina + Pantry","brand":"Io Mabe","sku":"HMM11RPO","material":"Cristal ahumado","dims":"53.9x42x30","price":3569,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/horno-de-microondas-convencional-mabe-modelo-hmm11rpo-de-1.1-pies/1192721071?skuid=1192721071","img":"https://drive.google.com/file/d/1JspZQQC65ArJav5pr_1_Hxwi4EVdC9kw/view?usp=drive_link"},{"id":"e05","name":"Refrigerador 25 pies","category":"Equipamiento","space":"Cocina + Pantry","brand":"LG","sku":"GM65bpt","material":"Aluminio Negro Mate","dims":"81x83x175","price":17586,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/refrigerador-french-door-lg-25-pies-c%C3%BAbicos-inverter-no-frost-gm65bpt/1160430628?skuid=1160430628","img":"https://drive.google.com/file/d/1eZSoByFRtYr3Vk4MON2R5_ZdSpG_R8Mz/view?usp=drive_link"},{"id":"e06","name":"Lavavajillas","category":"Equipamiento","space":"Cocina + Pantry","brand":"Midea","sku":"Mdwpf1401cbmx","material":"Aluminio Negro","dims":"60x59.8x84.5","price":9999,"qty":1,"url":"https://www.homedepot.com.mx/p/midea-lavavajillas-libre-instalacion-14-servicios-color-negro-mdwpf1401cbmx-238109","img":"https://drive.google.com/file/d/1k0zvt1BOr5XUWR8zAL8v8L3c05trLgfX/view?usp=drive_link"},{"id":"e07","name":"Cava de Vinos 33 botellas","category":"Equipamiento","space":"Cocina + Pantry","brand":"GUTSTARK","sku":"Mkz-Cavae32Boneg","material":"Aluminio Negro","dims":"40x51x81","price":5999,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/cava-de-vinos-gutstark-mkz-cavae32boneg-capacidad-33-botellas/1123933601?skuid=1123933601","img":"https://drive.google.com/file/d/15TnEPbYj4Jqs8UvSMF1WR5_l0wVu0bfS/view?usp=drive_link"},{"id":"e08","name":"Tarja tina chica","category":"Equipamiento","space":"Cocina + Pantry","brand":"OSLIFE","sku":"N/A","material":"Acero Inoxidable Negro","dims":"55x45x21","price":1399,"qty":1,"url":"https://www.amazon.com.mx/OSLIFE-Fregadero-Inoxidable-Multifuncional-Sistema/dp/B0FQC8WM81/ref=srd_d_vsims_d_sccl_1_3/141-8085737-7563359?pd_rd_w=IUvMC&content-id=amzn1.sym.82522888-658c-4b32-abc4-2ecbc55fe821&pf_rd_p=82522888-658c-4b32-abc4-2ecbc55fe821&pf_rd_r=FVJK635GGRX805VAX8FB&pd_rd_wg=53l4E&pd_rd_r=583c61b6-2137-4a1e-9001-4c365d1929ca&pd_rd_i=B0FQC8WM81&psc=1","img":"https://drive.google.com/file/d/11Da5cLJ5EV_B-cxcilGUfoD3WQs9lBbE/view?usp=drive_link"},{"id":"e09","name":"Tarja tina grande","category":"Equipamiento","space":"Cocina + Pantry","brand":"YMA Home","sku":"N/A","material":"Acero Inoxidable Negro","dims":"75x46x21","price":4274,"qty":1,"url":"https://www.amazon.com.mx/Tarja-Fregadero-Multifuncional-para-Cocina/dp/B0GP9SW7ZQ/ref=sr_1_6_sspa?__mk_es_MX=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1BEKNOV67PTMD&dib=eyJ2IjoiMSJ9.fINPri-LmYy1GCjfUM6wA_FjiTIhnTnLqNRgAt8UsiZtzDsJmNewocDAEUhEithIwWBxwuClKkskK8Ccvxt0pIIiv1HU1A_AowPo4CRxDBC00cv16rxzjZJDK4uq4usxGJKLlB2suelxrjdd_xPQ-ICLwXLZ6zTq2E952EFH8RV1EQFVvRISygNLYVvPx96yCYHSjUIkzJEmPU5HBZz5Tve8O7ksym2VlY_-nQmFJ70.1rinSdVs5_taMY_x2WGbH2Lfq1j8jj-hl5_Tt52JwFs&dib_tag=se&keywords=tarja%2Bgrande%2Bnegra&qid=1780164450&s=tools&sprefix=tarja%2Bgrande%2Bnegr%2Chi%2C208&sr=1-6-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1","img":"https://drive.google.com/file/d/1iAaTmJpQNZebLBSfx2FR53BnS_VDHyxH/view?usp=drive_link"},{"id":"e10","name":"Congelador horizontal 11 pies","category":"Equipamiento","space":"Cocina + Pantry","brand":"HISENSE","sku":"FC11D6BWX1","material":"Aluminio Blanco","dims":"111x63x84","price":7937,"qty":1,"url":"https://www.liverpool.com.mx/tienda/pdp/congelador-hisense-fc11d6bwx1-horizontal-11-pies-c%C3%BAbicos/1119558235?skuid=1119558235","img":"https://drive.google.com/file/d/1lrZhlctVijMqxwbvKT0peF_DOnUEA_q8/view?usp=drive_link"}],"finishes":[{"id":"f01","type":"Piso","name":"Mármol blanco","finish":"Pulido","space":"Cocina + Pantry","brand":"Interceramic","sku":"IC-MRM-60","area":"23.87 m²","price":0,"qty":0},{"id":"f02","type":"Muro","name":"Chapa de madera de roble","finish":"Natural mate","space":"Cocina + Pantry","brand":"Maderería Sonora","sku":"MS-CHP-RB","area":"—","price":0,"qty":0},{"id":"f03","type":"Piso","name":"Piso de ingeniería de roble","finish":"Aceitado","space":"Recámara Principal","brand":"Quick-Step","sku":"QS-ING-RB","area":"40.86 m²","price":0,"qty":0},{"id":"f04","type":"Muro","name":"Papel tapiz textil","finish":"Lino","space":"Recámara Principal","brand":"Casa Textil","sku":"CT-TAP-01","area":"—","price":0,"qty":0},{"id":"f05","type":"Piso","name":"Mármol","finish":"Pulido","space":"Baño Principal","brand":"Interceramic","sku":"IC-MRM-BN","area":"12.40 m²","price":0,"qty":0},{"id":"f06","type":"Muro","name":"Azulejo zellige","finish":"Esmaltado","space":"Baño Principal","brand":"Mosaico","sku":"MO-ZEL-10","area":"—","price":0,"qty":0},{"id":"f07","type":"Techo","name":"Pintura vinílica","finish":"Mate","space":"General","brand":"Comex","sku":"CMX-VIN-BL","area":"—","price":0,"qty":0},{"id":"f08","type":"Piso","name":"Piedra braza","finish":"Natural","space":"Terraza + Balcón","brand":"Canteras del Norte","sku":"CN-BRZ-01","area":"34.34 m²","price":0,"qty":0},{"id":"","type":"Recubrimiento cocina · cajillo","name":"Cocina + Pantry","finish":"483x50","space":"Chapa de encino","brand":"Laca mate","sku":"Veta horizontal","area":"","price":0,"qty":0}],"carpentry":[{"id":"c01","name":"Mueble de cocina · barra principal","space":"Cocina + Pantry","dims":"483x60x240","materials":"MDF + encino natural en frentes · cubierta de cuarzo","finish":"Natural aceitado","note":"Cajones con cierre lento, herraje Blum. ","price":0,"qty":1,"img":""},{"id":"c02","name":"Mueble de cocina · isla","space":"Cocina + Pantry","dims":"255x110x90","materials":"MDF + encino natural en frentes · cubierta de cuarzo","finish":"Natural aceitado","note":"Cajones con cierre lento, herraje Blum. ","price":0,"qty":1,"img":""},{"id":"c03","name":"Mueble de pantry · gabinetes y alacena","space":"Cocina + Pantry","dims":"268x60x240","materials":"MDF color arena · cubierta de granito","finish":"Mate","note":"Cajones con cierre lento, herraje Blum. ","price":0,"qty":1,"img":""},{"id":"","name":"","space":"","dims":"","materials":"","finish":"","note":"","price":0,"qty":1,"img":""},{"id":"","name":"","space":"","dims":"","materials":"","finish":"","note":"","price":0,"qty":1,"img":""},{"id":"","name":"","space":"","dims":"","materials":"","finish":"","note":"","price":0,"qty":1,"img":""}],"renders":[{"space":"Cocina + Pantry","label":"Cocina conceptual","note":"Render","img":"https://drive.google.com/file/d/11nMWvbj-5V4lcXo5KSHUAp9LZyvjENt5/view?usp=drive_link"},{"space":"Cocina + Pantry","label":"Cocina","note":"Moodboard","img":""},{"space":"Cocina + Pantry","label":"Pantry","note":"Moodboard","img":""}],"planos":[{"title":"Planta Baja","space":"Planta Baja","note":"Distribución general","img":""},{"title":"Planta Alta","space":"Planta Alta","note":"Distribución general","img":""},{"title":"Plano de carpintería","space":"General","note":"Despieces y cotas","img":""}]};</script>
   <script>
   (function(){
@@ -320,6 +381,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       SHEET_URL: "https://script.google.com/macros/s/AKfycbzwkO-JpncB9l_VGAJOQyxvkioyk9re2z50Gef_0FBsZKRsSR9DBGe2M50Lp511FAnu/exec",
       ENTRY_KEY: "Mona",        /* clave de acceso de la cliente (Etapa 1) */
       DESIGNER_KEY: "Sayri",    /* clave de modo diseñadora (Etapa 2) */
+      WRITE_SECRET: "aurum-rnm-2026",  /* secreto compartido para escribir al Sheet (seguridad suave) */
       FETCH_TIMEOUT: 10000
     };
 
@@ -374,6 +436,21 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     function unlockedIds(){ try{ return JSON.parse(localStorage.getItem(UNLOCK_KEY))||[]; }catch(e){ return []; } }
     function isUnlocked(id){ return unlockedIds().indexOf(id)>=0; }
     function unlock(id){ var u=unlockedIds(); if(u.indexOf(id)<0){ u.push(id); try{localStorage.setItem(UNLOCK_KEY,JSON.stringify(u));}catch(e){} } }
+    function truthy(v){ v=String(v==null?"":v).trim().toLowerCase(); return v==="1"||v==="true"||v==="sí"||v==="si"||v==="x"||v==="activo"||v==="active"||v==="verdadero"; }
+    function normalizeProjects(rows){
+      return rows.map(function(r,i){
+        var act = (r.active!=null?r.active:(r.activo!=null?r.activo:r.activa));
+        return {
+          id: (r.id||r.slug||("pr"+(i+1))),
+          name: (r.name||r.nombre||("Residencia "+(i+1))),
+          sub: (r.sub||r.subtitle||r.subtitulo||""),
+          active: (act==null? true : truthy(act)),
+          key: (r.key||r.clave||""),
+          cover: (r.cover||r.img||r.portada||r.imagen||""),
+          url: (r.url||r.liga||r.link||"")
+        };
+      });
+    }
 
     /* ============ STATE ============ */
     var state = {
@@ -382,7 +459,8 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       view: "espacios",
       type: TYPES[0] ? TYPES[0].key : "mobiliario",
       space: null,
-      conceptOpen: false
+      conceptOpen: false,
+      designer: false           /* modo diseñadora (clave Sayri) */
     };
     var BUYABLE=[], BUY_BY_ID={}, OPT_GROUPS={}, selected=[];
 
@@ -391,13 +469,22 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     function qn(q){var n=Number(q);return (!q && q!==0)?1:(isNaN(n)?1:(n===0?1:n));}
     function num(p){var n=Number(p);return isNaN(n)?0:n;}
     function money(n){return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0}).format(num(n));}
+    function driveId(u){
+      u=String(u||"").trim();
+      var m = u.match(/\/file\/d\/([-\w]{16,})/) ||
+              u.match(/[?&]id=([-\w]{16,})/) ||
+              u.match(/googleusercontent\.com\/d\/([-\w]{16,})/) ||
+              u.match(/\/d\/([-\w]{16,})/) ||
+              (/^[-\w]{25,}$/.test(u) ? [null,u] : null);   /* pegaron solo el ID */
+      return m ? m[1] : "";
+    }
     function imgUrl(u){
       if(!u) return "";
       u=String(u).trim();
-      var m=u.match(/\/file\/d\/([^\/]+)/)||u.match(/[?&]id=([^&]+)/);
-      if(m) return "https://lh3.googleusercontent.com/d/"+m[1];
-      if(/dropbox\.com/.test(u)) return u.replace("www.dropbox.com","dl.dropboxusercontent.com").replace(/\?dl=0$/,"");
-      return u;
+      var id=driveId(u);
+      if(id) return "https://drive.google.com/thumbnail?id="+id+"&sz=w1600"; /* endpoint estable para <img> */
+      if(/dropbox\.com/.test(u)) return u.replace("www.dropbox.com","dl.dropboxusercontent.com").replace(/[?&]dl=0/,"");
+      return u; /* link genérico: el navegador lo carga aunque no traiga .jpg/.png */
     }
     function tbl(k){return Array.isArray(AURUM[k])?AURUM[k]:[];}
     function prodCat(c){return tbl("products").filter(function(p){return p.category===c;});}
@@ -572,13 +659,14 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       var rows=items.map(function(p){
         var sel=isSel(p.id), img=imgUrl(p.img), priced=num(p.price)>0;
         var sub=[p.brand,p.dims].filter(Boolean).join(" · ");
-        return '<button class="opt-row'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+
+        var btn='<button class="opt-row'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+
           '<span class="opt-letter">'+esc(p.opcion||"·")+'</span>'+
           (img?'<span class="opt-thumb" style="background-image:url('+esc(img)+')"></span>':'')+
           '<span class="opt-info"><span class="opt-name">'+esc(p.name||"—")+'</span>'+(sub?'<span class="opt-sub">'+esc(sub)+'</span>':'')+'</span>'+
           '<span class="opt-price">'+(priced?money(p.price):'')+'</span>'+
           '<span class="opt-check"></span>'+
         '</button>';
+        return DZ()? '<div class="opt-line">'+btn+pinBtn(idTable(p.id),p.id)+'</div>' : btn;
       }).join("");
       return '<article class="item opt-card">'+
         '<div class="opt-card-h"><span class="opt-tag">'+items.length+' opciones · elige una</span><h4>'+esc(prettyGroup(groupKey))+'</h4></div>'+
@@ -606,7 +694,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       var priceHtml=priced?'<span class="price">'+money(p.price)+(qn(p.qty)>1?' <small style="font-size:12px;color:var(--ink-3)">×'+qn(p.qty)+'</small>':'')+'</span>'
                           :'<span class="price obra">Por definir</span>';
       var selBtn=(buy&&priced)?'<button class="sel-btn'+(isSel(p.id)?" on":"")+'" data-sel="'+esc(p.id)+'">'+(isSel(p.id)?'<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Incluido':'Incluir')+'</button>':'';
-      return '<article class="item'+(buy&&isSel(p.id)?" sel":"")+'">'+imgwrap+
+      return '<article class="item'+(buy&&isSel(p.id)?" sel":"")+'">'+imgwrap+pinWrap(idTable(p.id),p.id)+
         '<div class="body">'+
           '<h4>'+esc(p.name||"—")+'</h4>'+
           (prov?'<p class="prov">'+prov+'</p>':"")+
@@ -617,9 +705,9 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 
     /* ---- finishes ---- */
     function renderFinishes(){
-      var fin=tbl("finishes"); if(!fin.length) return emptyNote("Sin acabados cargados");
+      var fin=tbl("finishes"); if(!fin.length) return addBtn("finishes")+emptyNote("Sin acabados cargados");
       var types={}; fin.forEach(function(f){(types[f.type||"Otros"]=types[f.type||"Otros"]||[]).push(f);});
-      return '<div class="fade">'+Object.keys(types).map(function(tp){
+      return addBtn("finishes")+'<div class="fade">'+Object.keys(types).map(function(tp){
         return '<div class="fin-group"><div class="grouphead">'+esc(tp)+'</div>'+types[tp].map(finRow).join("")+'</div>';
       }).join("")+'</div>';
     }
@@ -630,17 +718,17 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
         '<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+esc(f.space||"")+' · '+esc(f.finish||"")+'</p></div>'+
         '<div class="col">'+esc([f.brand,f.sku].filter(Boolean).join(" · "))+'</div>'+
         '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':'')+'</div>'+
-        '<div>'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Obra</span>')+'</div>'+
+        '<div>'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Obra</span>')+pinBtn("finishes",f.id)+'</div>'+
       '</div>';
     }
 
     /* ---- carpentry ---- */
     function renderCarpentry(){
-      var c=tbl("carpentry"); if(!c.length) return emptyNote("Sin carpintería cargada");
-      return '<div class="grid-items fade">'+c.map(function(p){
+      var c=tbl("carpentry"); if(!c.length) return addBtn("carpentry")+emptyNote("Sin carpintería cargada");
+      return addBtn("carpentry")+'<div class="grid-items fade">'+c.map(function(p){
         var img=imgUrl(p.img), priced=num(p.price)>0, sel=isSel(p.id);
         return '<article class="item'+(sel?" sel":"")+'">'+
-          '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':'<div class="ph">A medida</div>')+'</div>'+
+          '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':'<div class="ph">A medida</div>')+'</div>'+pinWrap("carpentry",p.id)+
           '<div class="body"><h4>'+esc(p.name)+'</h4>'+
             '<p class="prov">'+esc(p.space||"")+(p.dims?' · '+esc(p.dims):"")+'</p>'+
             (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
@@ -658,14 +746,14 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     }
     function renderSpaces(){
       var sp=tbl("spaces"); if(!sp.length) return emptyNote("Sin espacios cargados");
-      return '<div class="grid-spaces fade">'+sp.map(function(s){
-        return '<button class="space-card" data-space="'+esc(s.name)+'">'+
+      return addBtn("spaces")+'<div class="grid-spaces fade">'+sp.map(function(s){
+        return '<div class="space-wrap"><button class="space-card" data-space="'+esc(s.name)+'">'+
           '<p class="lvl">'+esc(s.level||"")+'</p>'+
           '<h3>'+esc(s.name)+'</h3>'+
           '<div class="row"><span>Superficie</span><b>'+esc(s.surface||"—")+' m²</b></div>'+
           '<div class="row"><span>Elementos</span><b>'+spaceItemCount(s.name)+'</b></div>'+
           (num(s.budget)>0?'<div class="row"><span>Presupuesto</span><b>'+money(s.budget)+'</b></div>':'')+
-        '</button>';
+        '</button>'+pinWrap("spaces",s.name)+'</div>';
       }).join("")+'</div>';
     }
     function renderDossier(s){
@@ -699,10 +787,10 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 
     /* ---- gallery (renders/planos) ---- */
     function renderGallery(s){
-      var items=tbl(s.table); if(!items.length) return emptyNote("Sin imágenes cargadas");
-      return '<div class="gallery fade">'+items.map(function(r){
+      var items=tbl(s.table); if(!items.length) return addBtn(s.table)+emptyNote("Sin imágenes cargadas");
+      return addBtn(s.table)+'<div class="gallery fade">'+items.map(function(r,i){
         var img=imgUrl(r.img);
-        return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" alt="'+esc(r.label||r.title||"")+'" loading="lazy">':'<div class="ph">Pendiente</div>')+
+        return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" alt="'+esc(r.label||r.title||"")+'" loading="lazy">':'<div class="ph">Pendiente</div>')+pinWrap(s.table,i)+
           '<div class="cap"><h4>'+esc(r.label||r.title||"—")+'</h4>'+((r.note||r.space)?'<p>'+esc(r.note||r.space)+'</p>':"")+'</div></div>';
       }).join("")+'</div>';
     }
@@ -732,6 +820,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       var mats=(md.materials||[]).map(function(m){return '<span class="mat">'+esc(m)+'</span>';}).join("");
       var tiles=(md.tiles||[]).map(function(t){var img=imgUrl(t.img);return '<div class="gal-item">'+(img?'<img src="'+esc(img)+'" data-zoom="'+esc(img)+'" loading="lazy">':'<div class="ph">'+esc(t.label||"")+'</div>')+'<div class="cap"><h4>'+esc(t.label||"")+'</h4>'+(t.note?'<p>'+esc(t.note)+'</p>':"")+'</div></div>';}).join("");
       return '<div class="fade">'+
+        (DZ()?'<button class="ed-add" data-edit="__mood|">'+PEN+' Editar mood & paleta</button>':'')+
         (pal?'<div class="grouphead">Paleta cromática</div><div class="palette">'+pal+'</div>':"")+
         (mats?'<div class="grouphead">Materiales</div><div class="matrow">'+mats+'</div>':"")+
         (tiles?'<div class="grouphead">Atmósfera</div><div class="gallery">'+tiles+'</div>':"")+
@@ -792,13 +881,15 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       var ctrl=new AbortController(), t=setTimeout(function(){ctrl.abort();},CONFIG.FETCH_TIMEOUT);
       fetch(url,{signal:ctrl.signal}).then(function(r){return r.json();}).then(function(j){
         clearTimeout(t);
-        if(j&&j.meta){ AURUM=j; window.AURUM=j; try{localStorage.setItem(CACHE_KEY,JSON.stringify(j));}catch(e){}
+        if(j&&j.meta){ if(!j.meta.logo && window.__SNAP_LOGO__) j.meta.logo=window.__SNAP_LOGO__;
+          AURUM=j; window.AURUM=j; try{localStorage.setItem(CACHE_KEY,JSON.stringify(j));}catch(e){}
+          if(j._projects && j._projects.length) PROJECTS=normalizeProjects(j._projects);
           loadSelection(); render(); setBadge("live"); console.log("[llave-maestra] datos en vivo ✓"); }
         else { setBadge("error"); console.warn("[llave-maestra] respuesta sin meta"); }
       }).catch(function(e){
         clearTimeout(t); console.warn("[llave-maestra] fetch falló:",e&&e.message);
         var c=null; try{c=JSON.parse(localStorage.getItem(CACHE_KEY));}catch(_){}
-        if(c&&c.meta){ AURUM=c; loadSelection(); render(); setBadge("cache"); }
+        if(c&&c.meta){ if(!c.meta.logo && window.__SNAP_LOGO__) c.meta.logo=window.__SNAP_LOGO__; AURUM=c; if(c._projects&&c._projects.length) PROJECTS=normalizeProjects(c._projects); loadSelection(); render(); setBadge("cache"); }
         else setBadge("error");
       });
     }
@@ -834,9 +925,9 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     function renderLanding(){
       var m=AURUM.meta||{}, activeCover=imgUrl(m.heroRender);
       var cards=PROJECTS.map(function(pr){
-        var cover=pr.active?activeCover:"";
+        var cover=pr.cover?imgUrl(pr.cover):(pr.active?activeCover:"");
         var coverHtml=cover?'<img src="'+esc(cover)+'" alt="'+esc(pr.name)+'">':'<div class="ph">'+esc((pr.name||"·").slice(0,1))+'</div>';
-        var tag=pr.active?(isUnlocked(pr.id)?"Abierta":"Con clave"):"Próximamente";
+        var tag=pr.active?(pr.url?"Abrir":(isUnlocked(pr.id)?"Abierta":"Con clave")):"Próximamente";
         return '<button class="house-card'+(pr.active?"":" locked")+'" '+(pr.active?('data-project="'+esc(pr.id)+'"'):'disabled')+'>'+
           '<div class="house-cover">'+coverHtml+'<span class="tag">'+tag+'</span></div>'+
           '<div class="house-body"><h3>'+esc(pr.name)+'</h3><p>'+esc(pr.sub)+'</p></div>'+
@@ -863,6 +954,7 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
         '<p class="tag">Concepto'+(c.style?' · '+esc(c.style):'')+'</p>'+
         (c.statement?'<p class="stmt">'+esc(c.statement)+'</p>':'')+ more+
         '<button class="csum-toggle" data-action="toggle-concept">'+(state.conceptOpen?"Ocultar":"Ver concepto completo")+'</button>'+
+        (DZ()?'<button class="ed-mood-pin" data-edit="__concept|">'+PEN+' Editar concepto</button>':'')+
       '</div>';
     }
     function typeNav(){
@@ -873,7 +965,9 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
     function renderTypeContent(key){
       var s=null; for(var i=0;i<TYPES.length;i++){ if(TYPES[i].key===key){ s=TYPES[i]; break; } }
       if(!s) s=TYPES[0];
-      var head='<div class="type-head fade"><h2>'+esc(s.label)+'</h2></div>', body;
+      var addable=(s.kind==="cat"||s.kind==="items");
+      var addhtml=(DZ()&&addable)?'<button class="ed-add" data-add="'+tableOf(s)+(s.cat?'|'+esc(s.cat):'')+'"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none"><path d="M12 5v14M5 12h14"/></svg>Agregar</button>':'';
+      var head='<div class="type-head fade"><h2>'+esc(s.label)+'</h2></div>'+addhtml, body;
       if(s.kind==="cat"||s.kind==="items") body=renderItemsGrid(sectionItems(s));
       else if(s.kind==="finishes") body=renderFinishes();
       else if(s.kind==="carpentry") body=renderCarpentry();
@@ -894,20 +988,233 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
       app.innerHTML = top + renderMast() + conceptSummary() + toggle + content;
     }
 
+    /* ============ MODO DISEÑADORA (Etapa 2) ============ */
+    var DESIGNER_FLAG="aurum_designer_v1";
+    var ED=null;
+    var SCHEMA={
+      products:  {tab:"Productos",   k:"id",  label:"producto",   pre:"p", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
+      lighting:  {tab:"Luminarias",  k:"id",  label:"luminaria",  pre:"l", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
+      hardware:  {tab:"Herrajes",    k:"id",  label:"herraje",    pre:"h", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
+      equipment: {tab:"Equipamiento",k:"id",  label:"equipo",     pre:"e", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
+      finishes:  {tab:"Acabados",    k:"id",  label:"acabado",    pre:"f", f:["id","type","name","finish","space","brand","sku","area","price","qty"]},
+      carpentry: {tab:"Carpinteria", k:"id",  label:"carpintería",pre:"c", f:["id","name","space","dims","materials","finish","note","price","qty","img"]},
+      spaces:    {tab:"Espacios",    k:"name",label:"espacio",    pre:"",  f:["name","level","surface","dims","floor","ceiling","walls","budget"]},
+      renders:   {tab:"Renders",     k:"__i", label:"render",     pre:"",  f:["space","label","note","img"]},
+      planos:    {tab:"Planos",      k:"__i", label:"plano",      pre:"",  f:["title","space","note","img"]}
+    };
+    var NUMF={price:1,qty:1,budget:1};
+    var TAREA={note:1,walls:1,materials:1};
+    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra",img:"Imagen (link de Drive)",type:"Tipo (Piso / Muro / Techo)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título"};
+
+    function DZ(){ return !!state.designer; }
+    function assign(t){ for(var i=1;i<arguments.length;i++){ var s=arguments[i]; if(s) for(var k in s) if(Object.prototype.hasOwnProperty.call(s,k)) t[k]=s[k]; } return t; }
+    function idTable(id){ return {p:"products",l:"lighting",h:"hardware",e:"equipment",f:"finishes",c:"carpentry"}[String(id||"")[0]]||""; }
+    function tableOf(s){ if(!s) return ""; if(s.kind==="cat") return "products"; if(s.kind==="items"||s.kind==="gallery") return s.table; if(s.kind==="finishes") return "finishes"; if(s.kind==="carpentry") return "carpentry"; return ""; }
+    function recOf(table,key){ var arr=tbl(table), sc=SCHEMA[table]; if(!sc) return null; if(sc.k==="__i") return arr[Number(key)]||null; for(var i=0;i<arr.length;i++){ if(String(arr[i][sc.k])===String(key)) return arr[i]; } return null; }
+    function nextId(table){ var sc=SCHEMA[table], mx=0; tbl(table).forEach(function(r){ var m=String(r.id||"").match(/(\d+)$/); if(m) mx=Math.max(mx,Number(m[1])); }); return sc.pre+("0"+(mx+1)).slice(-2); }
+    function blankRec(table){ var sc=SCHEMA[table], o={}; sc.f.forEach(function(f){ o[f]=(f in NUMF)?0:""; }); if(sc.k==="id") o.id=nextId(table); return o; }
+
+    /* --- pines + botón agregar (solo en modo diseñadora) --- */
+    var PEN='<svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
+    function pinBtn(table,key){ if(!DZ()) return ""; if(key===""||key==null||!table) return ""; return '<button class="ed-pin" data-edit="'+esc(table)+'|'+esc(key)+'" title="Editar" aria-label="Editar">'+PEN+'</button>'; }
+    function pinWrap(table,key){ var b=pinBtn(table,key); return b? '<div class="ed-pinwrap">'+b+'</div>' : ""; }
+    function addBtn(table){ return DZ()? '<button class="ed-add" data-add="'+esc(table)+'"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none"><path d="M12 5v14M5 12h14"/></svg>Agregar</button>' : ""; }
+
+    function setDesignerBar(){
+      var dz=document.getElementById("dz"); if(!dz) return;
+      if(DZ()){
+        dz.innerHTML='<span class="dz-pill on"><svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5l-4-4L4 16v4z"/></svg>Diseñadora</span>'+
+          '<button class="dz-pill" id="dzHist"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>Historial</button>'+
+          '<button class="dz-pill" id="dzOut">Salir</button>';
+      } else {
+        dz.innerHTML='<button class="dz-pill" id="dzBtn"><svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5l-4-4L4 16v4z"/></svg>Diseñadora</button>';
+      }
+    }
+    function tryDesigner(){
+      var k=prompt("Clave de diseñadora:"); if(k==null) return;
+      if(String(k).trim().toLowerCase()===String(CONFIG.DESIGNER_KEY||"").toLowerCase()){
+        state.designer=true; try{sessionStorage.setItem(DESIGNER_FLAG,"1");}catch(e){} render();
+      } else alert("Clave incorrecta.");
+    }
+    function exitDesigner(){ state.designer=false; try{sessionStorage.removeItem(DESIGNER_FLAG);}catch(e){} render(); }
+
+    /* --- editor: abrir --- */
+    function openEd(table,key){
+      if(table==="__concept") return openConcept();
+      if(table==="__mood") return openMood();
+      var sc=SCHEMA[table]; if(!sc) return;
+      var isNew=(key==null||key==="");
+      var rec=isNew?blankRec(table):(recOf(table,key)||blankRec(table));
+      var dkey="aurum_draft_"+table+"_"+(isNew?"__new":key);
+      var draft=null; try{draft=JSON.parse(localStorage.getItem(dkey));}catch(e){}
+      ED={kind:"row",table:table,key:(isNew?null:key),dkey:dkey,rec:assign({},rec,draft||{})};
+      renderRowEditor();
+    }
+    function renderRowEditor(){
+      var sc=SCHEMA[ED.table], rec=ED.rec;
+      var body=sc.f.map(function(f){
+        var v=rec[f]==null?"":rec[f], lab=FLABEL[f]||f, inp;
+        if(f in TAREA) inp='<textarea data-f="'+f+'" rows="2">'+esc(v)+'</textarea>';
+        else inp='<input data-f="'+f+'" type="'+((f in NUMF)?"number":"text")+'" value="'+esc(v)+'"'+(f==="id"&&ED.key!=null?' readonly style="opacity:.55"':'')+'>';
+        return '<label class="ed-row"><span>'+esc(lab)+'</span>'+inp+'</label>';
+      }).join("");
+      showEditor((ED.key==null?"Agregar ":"Editar ")+sc.label, body, ED.key!=null);
+    }
+    function showEditor(title, bodyHtml, showDelete){
+      document.getElementById("ed-title").textContent=title;
+      document.getElementById("ed-body").innerHTML=bodyHtml;
+      document.getElementById("ed-del").style.display=showDelete?"inline-flex":"none";
+      document.getElementById("ed-save").style.display="inline-flex";
+      setEdState("");
+      document.getElementById("editor").classList.add("on");
+    }
+    function setEdState(msg,warn){ var s=document.getElementById("ed-state"); if(s){ s.textContent=msg||""; s.className="ed-state"+(warn?" warn":""); } }
+    function edCollect(){ var rec={}; var els=document.querySelectorAll("#ed-body [data-f]"); for(var i=0;i<els.length;i++){ rec[els[i].getAttribute("data-f")]=els[i].value; } ED.rec=assign(ED.rec||{},rec); return ED.rec; }
+    function edAutosave(){ if(!ED) return; if(ED.kind==="row"&&ED.dkey){ edCollect(); try{localStorage.setItem(ED.dkey,JSON.stringify(ED.rec));}catch(e){} setEdState("borrador guardado"); }
+      else if(ED.dkey){ var d={}; document.querySelectorAll("#ed-body [data-f]").forEach(function(el){ d[el.getAttribute("data-f")]=el.value; }); try{localStorage.setItem(ED.dkey,JSON.stringify(d));}catch(e){} setEdState("borrador guardado"); } }
+
+    /* --- editor: guardar fila --- */
+    function edSave(){
+      if(!ED) return;
+      if(ED.kind==="concept") return saveConcept();
+      if(ED.kind==="mood") return saveMood();
+      if(ED.kind!=="row") return;
+      var sc=SCHEMA[ED.table], rec=edCollect();
+      Object.keys(NUMF).forEach(function(n){ if(n in rec) rec[n]=num(rec[n]); });
+      if(sc.k!=="__i" && !String(rec[sc.k]||"").trim()){ setEdState((FLABEL[sc.k]||sc.k)+" es obligatorio",true); return; }
+      applyRowLocal(ED.table, ED.key, rec);
+      var payload;
+      if(sc.k==="__i"){ payload = (ED.key==null) ? {action:"append",tab:sc.tab,row:rec} : {action:"setRow",tab:sc.tab,index:Number(ED.key),row:rec}; }
+      else { payload = {action:"upsert",tab:sc.tab,keyField:sc.k,key:rec[sc.k],row:rec}; }
+      setEdState("guardando…");
+      postSheet(payload).then(function(){ setEdState("guardado en el Sheet ✓"); finishEd(true); })
+        .catch(function(){ setEdState("guardado local; el Sheet no respondió (¿actualizaste el Apps Script?)",true); finishEd(false); });
+    }
+    function applyRowLocal(table,key,rec){
+      var sc=SCHEMA[table], arr=AURUM[table]||(AURUM[table]=[]);
+      if(key==null){ arr.push(rec); }
+      else if(sc.k==="__i"){ arr[Number(key)]=rec; }
+      else { for(var i=0;i<arr.length;i++){ if(String(arr[i][sc.k])===String(key)){ arr[i]=rec; loadSelection(); return; } } arr.push(rec); }
+      loadSelection();
+    }
+    function edDelete(){
+      if(!ED||ED.key==null) return;
+      var sc=SCHEMA[ED.table];
+      if(!confirm("¿Eliminar este "+sc.label+"? No se puede deshacer.")) return;
+      var arr=AURUM[ED.table]||[];
+      if(sc.k==="__i") arr.splice(Number(ED.key),1);
+      else AURUM[ED.table]=arr.filter(function(r){ return String(r[sc.k])!==String(ED.key); });
+      loadSelection();
+      var payload = (sc.k==="__i") ? {action:"delRow",tab:sc.tab,index:Number(ED.key)} : {action:"delete",tab:sc.tab,keyField:sc.k,key:ED.key};
+      postSheet(payload).then(function(){}).catch(function(){});
+      finishEd(true);
+    }
+    function finishEd(clearDraft){ if(ED&&ED.dkey&&clearDraft){ try{localStorage.removeItem(ED.dkey);}catch(e){} } setTimeout(function(){ closeEd(); }, 750); }
+    function closeEd(){ document.getElementById("editor").classList.remove("on"); ED=null; render(); }
+
+    /* --- editor concepto --- */
+    function linesToPairs(txt){ return String(txt||"").split("\n").map(function(l){ l=l.trim(); if(!l) return null; var p=l.split("::"); return {t:(p[0]||"").trim(), d:(p[1]||"").trim()}; }).filter(Boolean); }
+    function pairsToLines(arr){ return (arr||[]).map(function(p){ return (typeof p==="string"?p:((p.t||"")+(p.d?" :: "+p.d:""))); }).join("\n"); }
+    function gf(f){ var el=document.querySelector('#ed-body [data-f="'+f+'"]'); return el?el.value:""; }
+    function openConcept(){
+      var c=AURUM.concept||{};
+      var dkey="aurum_draft_concept"; var d=null; try{d=JSON.parse(localStorage.getItem(dkey));}catch(e){}
+      ED={kind:"concept",dkey:dkey};
+      var v=assign({style:c.style||"",statement:c.statement||"",definition:c.definition||"",body:(c.body||[]).join("\n\n"),pillars:pairsToLines(c.pillars)}, d||{});
+      var body=''+
+        '<label class="ed-row"><span>Estilo</span><input data-f="style" value="'+esc(v.style)+'"></label>'+
+        '<label class="ed-row"><span>Statement (frase principal)</span><textarea data-f="statement" rows="3">'+esc(v.statement)+'</textarea></label>'+
+        '<label class="ed-row"><span>Definición</span><textarea data-f="definition" rows="2">'+esc(v.definition)+'</textarea></label>'+
+        '<label class="ed-row"><span>Cuerpo (un párrafo por bloque; separa con línea en blanco)</span><textarea data-f="body" rows="5">'+esc(v.body)+'</textarea></label>'+
+        '<label class="ed-row"><span>Pilares (uno por línea — Título :: Descripción)</span><textarea data-f="pillars" rows="6">'+esc(v.pillars)+'</textarea></label>';
+      showEditor("Editar concepto", body, false);
+    }
+    function saveConcept(){
+      var style=gf("style"), statement=gf("statement"), definition=gf("definition");
+      var body=String(gf("body")).split(/\n{2,}/).map(function(s){return s.trim();}).filter(Boolean);
+      var pillars=linesToPairs(gf("pillars"));
+      AURUM.concept=assign({},AURUM.concept||{},{style:style,statement:statement,definition:definition,body:body,pillars:pillars});
+      setEdState("guardando…");
+      Promise.all([
+        postSheet({action:"kv",tab:"Concepto",pairs:{style:style,statement:statement,definition:definition,body1:body[0]||"",body2:body[1]||""}}),
+        postSheet({action:"list",tab:"Pilares",header:["titulo","texto"],rows:pillars.map(function(p){return [p.t,p.d];})})
+      ]).then(function(){ setEdState("concepto guardado ✓"); finishEd(true); })
+       .catch(function(){ setEdState("guardado local; el Sheet no respondió",true); finishEd(false); });
+    }
+    /* --- editor mood --- */
+    function openMood(){
+      var md=AURUM.mood||{};
+      var dkey="aurum_draft_mood"; var d=null; try{d=JSON.parse(localStorage.getItem(dkey));}catch(e){}
+      ED={kind:"mood",dkey:dkey};
+      var pal=(md.palette||[]).map(function(p){return (p.name||"")+" :: "+(p.hex||"");}).join("\n");
+      var mats=(md.materials||[]).join("\n");
+      var tiles=(md.tiles||[]).map(function(t){return [t.label||"",t.note||"",t.img||""].join(" :: ");}).join("\n");
+      var v=assign({palette:pal,materials:mats,tiles:tiles}, d||{});
+      var body=''+
+        '<label class="ed-row"><span>Paleta (una por línea — Nombre :: #hex)</span><textarea data-f="palette" rows="6">'+esc(v.palette)+'</textarea></label>'+
+        '<label class="ed-row"><span>Materiales (uno por línea)</span><textarea data-f="materials" rows="6">'+esc(v.materials)+'</textarea></label>'+
+        '<label class="ed-row"><span>Imágenes mood (una por línea — Título :: Nota :: link de Drive)</span><textarea data-f="tiles" rows="6">'+esc(v.tiles)+'</textarea></label>';
+      showEditor("Editar mood & paleta", body, false);
+    }
+    function saveMood(){
+      var palette=String(gf("palette")).split("\n").map(function(l){l=l.trim();if(!l)return null;var p=l.split("::");return {name:(p[0]||"").trim(),hex:(p[1]||"").trim()};}).filter(Boolean);
+      var materials=String(gf("materials")).split("\n").map(function(s){return s.trim();}).filter(Boolean);
+      var tiles=String(gf("tiles")).split("\n").map(function(l){l=l.trim();if(!l)return null;var p=l.split("::");return {label:(p[0]||"").trim(),note:(p[1]||"").trim(),span:"",img:(p[2]||"").trim()};}).filter(Boolean);
+      AURUM.mood=assign({},AURUM.mood||{},{palette:palette,materials:materials,tiles:tiles});
+      setEdState("guardando…");
+      Promise.all([
+        postSheet({action:"list",tab:"Paleta",header:["name","hex"],rows:palette.map(function(p){return [p.name,p.hex];})}),
+        postSheet({action:"list",tab:"Materiales",header:["material"],rows:materials.map(function(m){return [m];})}),
+        postSheet({action:"list",tab:"Mood",header:["label","note","span","img"],rows:tiles.map(function(t){return [t.label,t.note,t.span,t.img];})})
+      ]).then(function(){ setEdState("mood guardado ✓"); finishEd(true); })
+       .catch(function(){ setEdState("guardado local; el Sheet no respondió",true); finishEd(false); });
+    }
+
+    /* --- historial --- */
+    function openHist(){
+      var h=(AURUM._history||[]).slice();
+      var rows = h.length ? h.reverse().map(function(r){
+        return '<div class="hist-row"><span class="hist-when">'+esc(r.when||"")+'</span><span class="hist-what"><b>'+esc(r.tab||"")+'</b> · '+esc(r.key||"")+' · '+esc(r.action||"")+'</span>'+(r.note?'<span class="hist-note">'+esc(r.note)+'</span>':'')+'</div>';
+      }).join("") : '<p style="color:var(--ink-2);font-size:14px">Sin cambios registrados todavía. Aquí aparecerán las ediciones (con su fecha) una vez que el Apps Script esté actualizado.</p>';
+      ED={kind:"hist"};
+      document.getElementById("ed-title").textContent="Historial de cambios";
+      document.getElementById("ed-body").innerHTML='<div class="hist">'+rows+'</div>';
+      document.getElementById("ed-del").style.display="none";
+      document.getElementById("ed-save").style.display="none";
+      setEdState("");
+      document.getElementById("editor").classList.add("on");
+    }
+
+    /* --- POST al Sheet (body simple para evitar preflight CORS) --- */
+    function postSheet(payload){
+      if(!CONFIG.SHEET_URL) return Promise.reject(new Error("sin URL"));
+      payload.secret=CONFIG.WRITE_SECRET;
+      var ctrl=new AbortController(), t=setTimeout(function(){ctrl.abort();},CONFIG.FETCH_TIMEOUT);
+      return fetch(CONFIG.SHEET_URL,{method:"POST",body:JSON.stringify(payload),signal:ctrl.signal})
+        .then(function(r){ clearTimeout(t); return r.json(); })
+        .then(function(j){ if(j&&j.ok) return j; throw new Error((j&&j.error)||"rechazado"); });
+    }
+
     /* ---- master render + routing ---- */
     function render(){
       var tb=document.getElementById("topbar"), sb=document.getElementById("selbar");
       if(state.screen==="gate"){ if(tb)tb.style.display="none"; if(sb)sb.style.display="none"; renderGate(); return; }
       if(state.screen==="landing"){ if(tb)tb.style.display="none"; if(sb)sb.style.display="none"; renderLanding(); return; }
       if(tb)tb.style.display="flex";
-      renderBrand(); renderHouse(); renderSelBar();
+      renderBrand(); setDesignerBar(); renderHouse(); renderSelBar();
     }
 
     /* ---- events ---- */
     document.addEventListener("click",function(e){
       var t;
+      if(e.target.closest("#dzBtn")){ tryDesigner(); return; }
+      if(e.target.closest("#dzHist")){ openHist(); return; }
+      if(e.target.closest("#dzOut")){ exitDesigner(); return; }
+      if((t=e.target.closest("[data-ed]"))){ var ea=t.getAttribute("data-ed"); if(ea==="save")edSave(); else if(ea==="del")edDelete(); else closeEd(); return; }
+      if((t=e.target.closest("[data-edit]"))){ var pr=t.getAttribute("data-edit").split("|"); openEd(pr[0], pr[1]||""); return; }
+      if((t=e.target.closest("[data-add]"))){ var pa=t.getAttribute("data-add").split("|"); openEd(pa[0]); if(pa[1]&&ED&&ED.rec){ ED.rec.category=pa[1]; renderRowEditor(); } return; }
       if(e.target.closest("#gateGo")){ tryGate(); return; }
-      if((t=e.target.closest("[data-project]"))){ var pid=t.getAttribute("data-project"); state.project=pid; if(isUnlocked(pid)){ state.screen="house"; state.view="espacios"; state.space=null; state.conceptOpen=false; } else { state.screen="gate"; } render(); return; }
+      if((t=e.target.closest("[data-project]"))){ var pid=t.getAttribute("data-project"); var prj=projectById(pid); if(prj&&prj.url){ window.open(prj.url,"_blank","noopener"); return; } state.project=pid; if(isUnlocked(pid)){ state.screen="house"; state.view="espacios"; state.space=null; state.conceptOpen=false; } else { state.screen="gate"; } render(); return; }
       if((t=e.target.closest("[data-action]"))){
         var a=t.getAttribute("data-action");
         if(a==="to-landing"){ state.screen="landing"; state.space=null; render(); }
@@ -930,12 +1237,26 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 
     function openLB(src){ var lb=document.getElementById("lb"); document.getElementById("lbimg").src=src; lb.classList.add("on"); }
     document.getElementById("lb").addEventListener("click",function(){ this.classList.remove("on"); document.getElementById("lbimg").src=""; });
+    document.getElementById("editor").addEventListener("click",function(e){ if(e.target===this) closeEd(); });
+    document.addEventListener("input",function(e){ if(e.target.closest && e.target.closest("#ed-body")) edAutosave(); });
     document.addEventListener("keydown",function(e){
       if(e.key==="Enter" && document.getElementById("gateInput")){ tryGate(); return; }
-      if(e.key==="Escape"){ var lb=document.getElementById("lb"); if(lb) lb.classList.remove("on"); }
+      if(e.key==="Escape"){ var ed=document.getElementById("editor"); if(ed && ed.classList.contains("on")){ closeEd(); return; } var lb=document.getElementById("lb"); if(lb) lb.classList.remove("on"); }
     });
 
     /* ---- init ---- */
+    window.__SNAP_LOGO__ = (window.AURUM && window.AURUM.meta && window.AURUM.meta.logo) || "";
+    try{ if(sessionStorage.getItem(DESIGNER_FLAG)==="1") state.designer=true; }catch(e){}
+    if(AURUM._projects && AURUM._projects.length) PROJECTS=normalizeProjects(AURUM._projects);
+    /* respaldo global de imágenes: si una falla, prueba endpoint alterno de Drive y luego placeholder */
+    document.addEventListener("error", function(e){
+      var img=e.target; if(!img || img.tagName!=="IMG") return;
+      var src=img.getAttribute("src")||"";
+      var m=src.match(/[?&]id=([-\w]{16,})/)||src.match(/googleusercontent\.com\/d\/([-\w]{16,})/);
+      var id=m?m[1]:"";
+      if(id && !img.getAttribute("data-fb")){ img.setAttribute("data-fb","1"); img.src="https://lh3.googleusercontent.com/d/"+id+"=w1600"; return; }
+      if(!img.getAttribute("data-fb2")){ img.setAttribute("data-fb2","1"); var ph=document.createElement("div"); ph.className="ph"; ph.textContent="Sin imagen"; img.style.display="none"; if(img.parentNode) img.parentNode.appendChild(ph); }
+    }, true);
     loadSelection();
     render();
     fetchData(false);
