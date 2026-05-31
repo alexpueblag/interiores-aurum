@@ -39,9 +39,9 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:16px;
   padding:14px 24px;margin:0 -24px 0;background:rgba(245,241,234,.82);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;flex:0 1 auto}
 .brand img{height:30px;width:auto;display:block;opacity:.92}
-.brand .bt{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.brand .bt{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .brand .bt b{color:var(--ink);font-weight:500}
 .topbar .sp{flex:1}
 .badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
@@ -309,9 +309,9 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .ed-pin{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line-2);background:rgba(251,248,242,.92);color:var(--ink-2);cursor:pointer;transition:.16s;padding:0}
 .ed-pin:hover{border-color:var(--green);color:var(--green)}
 .ed-pin svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.fin-row .ed-pin,.opt-line .ed-pin{width:26px;height:26px;border-radius:6px}
-.opt-line{display:flex;gap:6px;align-items:stretch}
-.opt-line .opt-row{flex:1}
+.fin-row .ed-pin,.opt-line .ed-pin{width:26px;height:26px;border-radius:6px;flex:none}
+.opt-line{display:flex;gap:6px;align-items:stretch;min-width:0}
+.opt-line .opt-row{flex:1;min-width:0}
 .opt-line .ed-pin{align-self:center}
 .space-wrap{position:relative}
 .ed-add{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);border:1px dashed var(--line-2);background:transparent;border-radius:var(--r-sm);padding:9px 14px;cursor:pointer;transition:.16s;margin:0 0 14px}
@@ -564,6 +564,7 @@ button:focus:not(:focus-visible){outline:none}
 .room-jump::-webkit-scrollbar{display:none}
 .room-jump .rj{flex:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 13px;cursor:pointer;transition:.16s;white-space:nowrap}
 .room-jump .rj:hover{border-color:var(--ink);color:var(--ink)}
+.room-jump .rj.on{border-color:var(--accent);background:var(--accent);color:#fff}
 .dossier .grouphead{scroll-margin-top:108px}
 
 /* barra de presupuesto por espacio */
@@ -583,7 +584,7 @@ button:focus:not(:focus-visible){outline:none}
 
 /* #2 · encabezado compacto en móvil (sin encimar) */
 .dz-x{display:none;font-size:13px;line-height:1}
-@media(max-width:768px){
+@media(max-width:860px){
   .topbar{gap:8px;padding:10px 14px}
   .topbar .bt{display:none}
   .topbar .btn .lbl,.dz-pill .lbl{display:none}
@@ -731,6 +732,7 @@ button:focus:not(:focus-visible){outline:none}
       view: "espacios",
       type: TYPES[0] ? TYPES[0].key : "mobiliario",
       space: null,
+      roomCat: null,            /* categoría activa dentro del espacio */
       conceptOpen: false,
       designer: false           /* modo diseñadora (clave Sayri) */
     };
@@ -1124,15 +1126,17 @@ button:focus:not(:focus-visible){outline:none}
         ["Equipamiento",liveRows(tbl("equipment").filter(byS(name))),"items"]
       ];
       var groups=groupsRaw.filter(function(g){return g[1].length;});
-      if(groups.length>1) html+='<div class="room-jump">'+groups.map(function(g,i){return '<button class="rj" data-jump="sec-'+i+'">'+esc(g[0])+'</button>';}).join("")+'</div>';
-      groups.forEach(function(g,i){
-        html+='<div class="grouphead" id="sec-'+i+'">'+esc(g[0])+' · '+g[1].length+'</div>';
+      var act=null; for(var gi=0;gi<groups.length;gi++){ if(groups[gi][0]===state.roomCat){ act=groups[gi]; break; } }
+      if(!act) act=groups[0];
+      if(groups.length>1) html+='<div class="room-jump">'+groups.map(function(g){return '<button class="rj'+(g===act?" on":"")+'" data-roomcat="'+esc(g[0])+'">'+esc(g[0])+'</button>';}).join("")+'</div>';
+      if(act){
+        var g=act;
+        html+='<div class="grouphead" id="sec-cat">'+esc(g[0])+' · '+g[1].length+'</div>';
         if(g[2]==="finishes") html+=g[1].map(finRow).join("");
         else if(g[2]==="gallery") html+='<div class="gallery">'+g[1].map(function(r){var im=imgUrl(r.img);return '<div class="gal-item"><img src="'+esc(im)+'" data-zoom="'+esc(im)+'" alt="'+esc(r.label||"")+'" loading="lazy"><div class="cap"><h4>'+esc(r.label||"—")+'</h4>'+(r.note?'<p>'+esc(r.note)+'</p>':"")+'</div></div>';}).join("")+'</div>';
         else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(carpentryCard).join("")+'</div>';
         else html+=renderItemsGrid(g[1]);
-      });
-      if(!groups.length) html+=emptyNote("Aún no hay elementos asignados a este espacio");
+      } else html+=emptyNote("Aún no hay elementos asignados a este espacio");
       return html+'</div>';
     }
     function byS(name){return function(x){return x.space===name;};}
@@ -1651,9 +1655,9 @@ button:focus:not(:focus-visible){outline:none}
       }
       if((t=e.target.closest("[data-view]"))){ state.view=t.getAttribute("data-view"); state.space=null; render(); return; }
       if((t=e.target.closest("[data-type]"))){ state.type=t.getAttribute("data-type"); render(); return; }
-      if((t=e.target.closest("[data-space]"))){ state.space=t.getAttribute("data-space"); render(); return; }
+      if((t=e.target.closest("[data-space]"))){ state.space=t.getAttribute("data-space"); state.roomCat=null; render(); return; }
       if(e.target.closest("[data-space-back]")){ state.space=null; render(); return; }
-      if((t=e.target.closest("[data-jump]"))){ var jel=document.getElementById(t.getAttribute("data-jump")); if(jel) jel.scrollIntoView({behavior:"smooth",block:"start"}); return; }
+      if((t=e.target.closest("[data-roomcat]"))){ state.roomCat=t.getAttribute("data-roomcat"); refreshSelection(); var rj=document.querySelector&&document.querySelector(".room-jump"); if(rj && rj.scrollIntoView) rj.scrollIntoView({behavior:"smooth",block:"start"}); return; }
       if((t=e.target.closest("[data-sel]"))){ toggleSel(t.getAttribute("data-sel")); return; }
       if((t=e.target.closest("[data-zoom]"))){ openLB(t.getAttribute("data-zoom")); return; }
       if(e.target.id==="selAll"){ selected=BUYABLE.filter(function(p){return num(p.price)>0;}).map(function(p){return p.id;}); saveSel(); refreshSelection(); return; }
