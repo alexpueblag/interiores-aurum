@@ -13,7 +13,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#f5f1ea; --paper-2:#efe8dd; --card:#fbf8f2; --ink:#2a2521; --ink-2:#6f665b;
@@ -504,6 +504,32 @@ button:focus:not(:focus-visible){outline:none}
   .selbar .btn{padding:8px 12px}
   .dossier .room-hero-txt h2{margin-top:10px}
 }
+
+/* === ajustes finos === */
+/* 1 · imágenes: centradas en horizontal, ancladas arriba en vertical */
+.item .imgwrap img,.room-cover img,.dossier .room-hero-img img,.house-cover img{object-position:50% 0%}
+
+/* 3 · precios en Poppins */
+.item .price,.opt-price,.sum-pr,.sum-total,.selbar .si .big,.fin-row .col b,#printDoc .num,#printDoc .pln,#printDoc .psub b,#printDoc .ptot{font-family:"Poppins",sans-serif;font-variant-numeric:tabular-nums}
+.item .price{font-weight:600;font-size:16px;letter-spacing:-.01em}
+.item .price.obra{font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.06em}
+.opt-price{font-weight:500}
+.selbar .si .big{font-weight:600}
+.sum-total{font-weight:600}
+
+/* 4 · botón comprar / contactar proveedor */
+.buybtn{display:inline-flex;align-items:center;gap:7px;margin-top:11px;padding:8px 13px;border:1px solid var(--line-2);border-radius:9px;background:var(--card);color:var(--ink);font-family:var(--sans);font-size:12.5px;font-weight:500;text-decoration:none;cursor:pointer;transition:.18s;width:100%;justify-content:center}
+.buybtn svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.7;fill:none}
+.buybtn:hover{border-color:var(--ink);transform:translateY(-1px)}
+.buybtn.is-contact{border-color:rgba(84,114,104,.5);color:var(--green)}
+.buybtn.is-contact:hover{border-color:var(--green);background:rgba(84,114,104,.06)}
+.buymini{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;flex:none;border:1px solid var(--line-2);border-radius:7px;background:var(--card);color:var(--ink-2);text-decoration:none;transition:.18s}
+.buymini svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none}
+.buymini:hover{border-color:var(--ink);color:var(--ink);transform:translateY(-1px)}
+.buymini.is-contact{color:var(--green);border-color:rgba(84,114,104,.45)}
+.buymini.is-contact:hover{border-color:var(--green)}
+.opt-line .buymini{align-self:center}
+.fin-row>div:last-child{display:flex;align-items:center;gap:7px;justify-content:flex-end}
 </style>
 </head>
 <body>
@@ -868,7 +894,7 @@ button:focus:not(:focus-visible){outline:none}
           '<span class="opt-price">'+(priced?money(p.price):'')+'</span>'+
           '<span class="opt-check"></span>'+
         '</button>';
-        return DZ()? '<div class="opt-line">'+btn+pinBtn(idTable(p.id),p.id)+'</div>' : btn;
+        return '<div class="opt-line">'+btn+linkMini(p,"buy")+(DZ()?pinBtn(idTable(p.id),p.id):"")+'</div>';
       }).join("");
       return '<article class="item opt-card2">'+
         '<div class="imgwrap" '+(hImg?'data-zoom="'+esc(hImg)+'"':"")+'>'+(hImg?'<img src="'+esc(hImg)+'" alt="'+esc(prettyGroup(groupKey))+'" loading="lazy">':phName(prettyGroup(groupKey)))+'</div>'+
@@ -906,6 +932,7 @@ button:focus:not(:focus-visible){outline:none}
           (prov?'<p class="prov">'+prov+'</p>':"")+
           (attrs.length?'<p class="attrs">'+attrs.join(" · ")+'</p>':"")+
           '<div class="foot">'+priceHtml+selBtn+'</div>'+
+          linkBtn(p,"buy")+
         '</div></article>';
     }
 
@@ -924,7 +951,7 @@ button:focus:not(:focus-visible){outline:none}
         '<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+esc(f.space||"")+' · '+esc(f.finish||"")+'</p></div>'+
         '<div class="col">'+esc([f.brand,f.sku].filter(Boolean).join(" · "))+'</div>'+
         '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':'')+'</div>'+
-        '<div>'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Obra</span>')+pinBtn("finishes",f.id)+'</div>'+
+        '<div>'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+'</div>'+
       '</div>';
     }
 
@@ -940,6 +967,7 @@ button:focus:not(:focus-visible){outline:none}
             (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
             (p.note?'<p class="attrs" style="color:var(--ink-3)">'+esc(p.note)+'</p>':"")+
             '<div class="foot">'+(priced?'<span class="price">'+money(p.price)+'</span><button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="price obra">Por definir</span>')+'</div>'+
+            linkBtn(p,"service")+
           '</div></article>';
       }).join("")+'</div>';
     }
@@ -991,22 +1019,25 @@ button:focus:not(:focus-visible){outline:none}
         '</div>'+
       '</div>';
       var html='<div class="dossier"><button class="btn" data-space-back="1" style="margin-bottom:18px"><svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M15 18l-6-6 6-6"/></svg>Todos los espacios</button>'+hero;
+      var rendersX=tbl("renders").filter(byS(name)).filter(function(r){var u=imgUrl(r.img);return u && u!==thumb;});
       var groups=[
-        ["Carpintería",tbl("carpentry").filter(byS(name)),"carpentry"],
+        ["Renders",rendersX,"gallery"],
         ["Acabados",tbl("finishes").filter(byS(name)),"finishes"],
         ["Mobiliario",prodCat("Mobiliario").filter(byS(name)),"items"],
         ["Luminarias",tbl("lighting").filter(byS(name)),"items"],
+        ["Carpintería",tbl("carpentry").filter(byS(name)),"carpentry"],
         ["Herrajes",tbl("hardware").filter(byS(name)),"items"],
-        ["Equipamiento",tbl("equipment").filter(byS(name)),"items"],
+        ["Textiles",prodCat("Textiles").filter(byS(name)),"items"],
         ["Decoración",prodCat("Decoración").filter(byS(name)),"items"],
-        ["Textiles",prodCat("Textiles").filter(byS(name)),"items"]
+        ["Equipamiento",tbl("equipment").filter(byS(name)),"items"]
       ];
       var any=false;
       groups.forEach(function(g){
         if(!g[1].length) return; any=true;
         html+='<div class="grouphead">'+g[0]+' · '+g[1].length+'</div>';
         if(g[2]==="finishes") html+=g[1].map(finRow).join("");
-        else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(function(p){var img=imgUrl(p.img);return '<article class="item"><div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'">':phName(p.name))+'</div><div class="body"><h4>'+esc(p.name)+'</h4><p class="attrs">'+esc(p.materials||"")+'</p>'+(p.dims?'<p class="prov">'+esc(p.dims)+'</p>':"")+'</div></article>';}).join("")+'</div>';
+        else if(g[2]==="gallery") html+='<div class="gallery">'+g[1].map(function(r){var im=imgUrl(r.img);return '<div class="gal-item"><img src="'+esc(im)+'" data-zoom="'+esc(im)+'" alt="'+esc(r.label||"")+'" loading="lazy"><div class="cap"><h4>'+esc(r.label||"—")+'</h4>'+(r.note?'<p>'+esc(r.note)+'</p>':"")+'</div></div>';}).join("")+'</div>';
+        else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(function(p){var img=imgUrl(p.img);return '<article class="item"><div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'">':phName(p.name))+'</div><div class="body"><h4>'+esc(p.name)+'</h4><p class="attrs">'+esc(p.materials||"")+'</p>'+(p.dims?'<p class="prov">'+esc(p.dims)+'</p>':"")+linkBtn(p,"service")+'</div></article>';}).join("")+'</div>';
         else html+=renderItemsGrid(g[1]);
       });
       if(!any) html+=emptyNote("Aún no hay elementos asignados a este espacio");
@@ -1014,6 +1045,30 @@ button:focus:not(:focus-visible){outline:none}
     }
     function byS(name){return function(x){return x.space===name;};}
     function specRow(k,v){ return '<div class="spec"><span>'+esc(k)+'</span><b>'+v+'</b></div>'; }
+    function linkHref(raw){
+      raw=String(raw||"").trim();
+      if(/^[+\d][\d\s\-().]{6,}$/.test(raw)) return "https://wa.me/"+raw.replace(/[^\d]/g,"");
+      if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw)) return "mailto:"+raw;
+      return /^(tel:|mailto:|sms:|https?:)/i.test(raw)?raw:("https://"+raw);
+    }
+    function isContactLink(raw,kind){
+      raw=String(raw||"").trim();
+      return kind==="service" || /^[+\d][\d\s\-().]{6,}$/.test(raw) || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw) || /wa\.me|whatsapp/i.test(raw) || /^(tel:|mailto:|sms:)/i.test(raw);
+    }
+    function linkBtn(p,kind){
+      var raw=String((p&&p.url)||"").trim(); if(!raw) return "";
+      var contact=isContactLink(raw,kind), href=linkHref(raw);
+      var label=contact?"Contactar proveedor":"Comprar";
+      var icon=contact
+        ? '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-12 7.6L3 21l1.9-5.7A8.4 8.4 0 1 1 21 11.5z"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M6 7h13l-1.3 9.2a2 2 0 0 1-2 1.8H9.3a2 2 0 0 1-2-1.8z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>';
+      return '<a class="buybtn'+(contact?" is-contact":"")+'" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer" title="'+esc(label)+'">'+icon+'<span>'+label+'</span></a>';
+    }
+    function linkMini(p,kind){
+      var raw=String((p&&p.url)||"").trim(); if(!raw) return "";
+      var contact=isContactLink(raw,kind), href=linkHref(raw), label=contact?"Contactar proveedor":"Comprar";
+      return '<a class="buymini'+(contact?" is-contact":"")+'" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer" title="'+esc(label)+'" aria-label="'+esc(label)+'"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></a>';
+    }
 
     /* ---- gallery (renders/planos) ---- */
     function renderGallery(s){
@@ -1255,15 +1310,15 @@ button:focus:not(:focus-visible){outline:none}
       lighting:  {tab:"Luminarias",  k:"id",  label:"luminaria",  pre:"l", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
       hardware:  {tab:"Herrajes",    k:"id",  label:"herraje",    pre:"h", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
       equipment: {tab:"Equipamiento",k:"id",  label:"equipo",     pre:"e", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
-      finishes:  {tab:"Acabados",    k:"id",  label:"acabado",    pre:"f", f:["id","type","name","finish","space","brand","sku","area","price","qty"]},
-      carpentry: {tab:"Carpinteria", k:"id",  label:"carpintería",pre:"c", f:["id","name","space","dims","materials","finish","note","price","qty","img"]},
+      finishes:  {tab:"Acabados",    k:"id",  label:"acabado",    pre:"f", f:["id","type","name","finish","space","brand","sku","area","price","qty","url"]},
+      carpentry: {tab:"Carpinteria", k:"id",  label:"carpintería",pre:"c", f:["id","name","space","dims","materials","finish","note","price","qty","url","img"]},
       spaces:    {tab:"Espacios",    k:"name",label:"espacio",    pre:"",  f:["name","level","surface","dims","floor","ceiling","walls","budget"]},
       renders:   {tab:"Renders",     k:"__i", label:"render",     pre:"",  f:["space","label","note","img"]},
       planos:    {tab:"Planos",      k:"__i", label:"plano",      pre:"",  f:["title","space","note","img"]}
     };
     var NUMF={price:1,qty:1,budget:1};
     var TAREA={note:1,walls:1,materials:1};
-    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra",img:"Imagen (link de Drive)",type:"Tipo (Piso / Muro / Techo)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título"};
+    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra o contacto (URL / WhatsApp / correo)",img:"Imagen (link de Drive)",type:"Tipo (Piso / Muro / Techo)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título"};
 
     function DZ(){ return !!state.designer; }
     function assign(t){ for(var i=1;i<arguments.length;i++){ var s=arguments[i]; if(s) for(var k in s) if(Object.prototype.hasOwnProperty.call(s,k)) t[k]=s[k]; } return t; }
@@ -1485,6 +1540,7 @@ button:focus:not(:focus-visible){outline:none}
     /* ---- events ---- */
     document.addEventListener("click",function(e){
       var t;
+      if(e.target.closest("a[href]")) return;
       if(e.target.closest("#dzBtn")){ tryDesigner(); return; }
       if(e.target.closest("#dzHist")){ openHist(); return; }
       if(e.target.closest("#dzOut")){ exitDesigner(); return; }
