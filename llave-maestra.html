@@ -806,7 +806,7 @@ button:focus:not(:focus-visible){outline:none}
       BUYABLE = []
         .concat(tbl("products"),tbl("lighting"),tbl("hardware"),tbl("equipment"),tbl("carpentry"))
         .filter(function(p){return p && p.id;})
-        .concat(tbl("finishes").filter(function(f){return f && f.id && num(f.price)>0;}));
+        .concat(tbl("finishes").filter(function(f){return f && f.id;}));
       BUY_BY_ID={}; OPT_GROUPS={};
       BUYABLE.forEach(function(p){
         BUY_BY_ID[p.id]=p;
@@ -1003,7 +1003,7 @@ button:focus:not(:focus-visible){outline:none}
       var prov=[p.brand,p.sku].filter(Boolean).map(esc).join(" · ");
       var priceHtml=priced?'<span class="price">'+money(p.price)+(qn(p.qty)>1?' <small style="font-size:12px;color:var(--ink-3)">×'+qn(p.qty)+'</small>':'')+'</span>'
                           :'<span class="price obra">Por definir</span>';
-      var selBtn=(buy&&priced)?'<button class="sel-btn'+(isSel(p.id)?" on":"")+'" data-sel="'+esc(p.id)+'">'+(isSel(p.id)?'<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Incluido':'Incluir')+'</button>':'';
+      var selBtn=buy?'<button class="sel-btn'+(isSel(p.id)?" on":"")+'" data-sel="'+esc(p.id)+'">'+(isSel(p.id)?'<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Incluido':'Incluir')+'</button>':'';
       return '<article class="item'+(buy&&isSel(p.id)?" sel":"")+'">'+imgwrap+pinWrap(idTable(p.id),p.id)+
         '<div class="body">'+
           '<h4>'+esc(p.name||"—")+'</h4>'+
@@ -1031,8 +1031,8 @@ button:focus:not(:focus-visible){outline:none}
       return '<div class="fin-row'+(sel?" sel":"")+'">'+
         '<div class="fin-main">'+loc+'<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+[f.space,f.finish].filter(Boolean).map(esc).join(" · ")+'</p></div></div>'+
         '<div class="col">'+esc([f.brand,f.sku].filter(Boolean).join(" · "))+'</div>'+
-        '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':'')+'</div>'+
-        '<div class="fin-act">'+(priced&&buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="obra-tag">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+'</div>'+
+        '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':' · <b style="color:var(--ink-3);font-weight:400">Por definir</b>')+'</div>'+
+        '<div class="fin-act">'+(buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="obra-tag">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+'</div>'+
       '</div>';
     }
 
@@ -1046,7 +1046,7 @@ button:focus:not(:focus-visible){outline:none}
           (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
           (p.note?'<p class="attrs" style="color:var(--ink-3)">'+esc(p.note)+'</p>':"")+
           '<div class="actions">'+
-            '<div class="foot">'+(priced?'<span class="price">'+money(p.price)+'</span><button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="price obra">Por definir</span>')+'</div>'+
+            '<div class="foot">'+'<span class="price'+(priced?'':' obra')+'">'+(priced?money(p.price):'Por definir')+'</span><button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+(sel?"Incluido":"Incluir")+'</button>'+'</div>'+
             actionLink(p,"service")+
           '</div>'+
         '</div></article>';
@@ -1212,7 +1212,7 @@ button:focus:not(:focus-visible){outline:none}
     function renderSelBar(){
       var bar=document.getElementById("selbar");
       var t=selTotals();
-      var buyableCount=BUYABLE.filter(function(p){return num(p.price)>0;}).length;
+      var buyableCount=BUYABLE.filter(function(p){return !p.grupo;}).length + Object.keys(OPT_GROUPS).length;
       if(buyableCount===0){ bar.style.display="none"; return; }
       bar.style.display="flex";
       bar.innerHTML='<span class="si"><b>'+t.count+'</b> de '+buyableCount+' incluidos</span>'+
@@ -1660,7 +1660,7 @@ button:focus:not(:focus-visible){outline:none}
       if((t=e.target.closest("[data-roomcat]"))){ state.roomCat=t.getAttribute("data-roomcat"); refreshSelection(); var rj=document.querySelector&&document.querySelector(".room-jump"); if(rj && rj.scrollIntoView) rj.scrollIntoView({behavior:"smooth",block:"start"}); return; }
       if((t=e.target.closest("[data-sel]"))){ toggleSel(t.getAttribute("data-sel")); return; }
       if((t=e.target.closest("[data-zoom]"))){ openLB(t.getAttribute("data-zoom")); return; }
-      if(e.target.id==="selAll"){ selected=BUYABLE.filter(function(p){return num(p.price)>0;}).map(function(p){return p.id;}); saveSel(); refreshSelection(); return; }
+      if(e.target.id==="selAll"){ selected=[]; BUYABLE.forEach(function(p){ if(!p.grupo) selected.push(p.id); }); Object.keys(OPT_GROUPS).forEach(function(g){ var ids=OPT_GROUPS[g]; var a=ids.filter(function(id){return (BUY_BY_ID[id].opcion||"A")==="A";})[0]||ids[0]; if(a) selected.push(a); }); saveSel(); refreshSelection(); return; }
       if(e.target.id==="selNone"){ selected=[]; saveSel(); refreshSelection(); return; }
       if(e.target.id==="pdfBtn2"){ doPrint(); return; }
       if(e.target.closest("#sumBtn")){ openSummary(); return; }
