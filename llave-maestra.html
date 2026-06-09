@@ -316,6 +316,17 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .space-wrap{position:relative}
 .ed-add{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);border:1px dashed var(--line-2);background:transparent;border-radius:var(--r-sm);padding:9px 14px;cursor:pointer;transition:.16s;margin:0 0 14px}
 .ed-add:hover{border-color:var(--green);background:var(--card)}
+.ed-pinwrap{display:flex;gap:6px}
+.ed-eye.off{color:#fff;background:var(--ink-2);border-color:var(--ink-2)}
+.ed-eye.off:hover{color:#fff;border-color:var(--ink)}
+.is-hidden{opacity:.45}
+.obs-block{margin:-2px 0 22px;padding:12px 14px;background:var(--card);border:1px solid var(--line-2);border-radius:var(--r-sm)}
+.obs-block p{font-size:13.5px;line-height:1.55;color:var(--ink-2);margin:0;white-space:pre-wrap}
+.obs-block .obs-k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:6px}
+.obs-block textarea{width:100%;min-height:64px;border:1px solid var(--line-2);border-radius:6px;padding:8px 10px;font:inherit;font-size:13.5px;color:var(--ink);background:#fff;resize:vertical;box-sizing:border-box}
+.obs-block .obs-save{margin-top:8px;display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);border:1px solid var(--line-2);background:transparent;border-radius:6px;padding:7px 12px;cursor:pointer;transition:.16s}
+.obs-block .obs-save:hover{border-color:var(--green)}
+.obs-state{font-family:var(--mono);font-size:10px;color:var(--ink-3);margin-left:8px}
 .ed-mood-pin{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);border:1px solid var(--line-2);background:transparent;border-radius:999px;padding:5px 11px;cursor:pointer;margin-left:10px;vertical-align:middle}
 .ed-mood-pin:hover{border-color:var(--green)}
 
@@ -760,16 +771,24 @@ button:focus:not(:focus-visible){outline:none}
       if(/dropbox\.com/.test(u)) return u.replace("www.dropbox.com","dl.dropboxusercontent.com").replace(/[?&]dl=0/,"");
       return u; /* link genérico: el navegador lo carga aunque no traiga .jpg/.png */
     }
+    function imgStyle(p){
+      var v=String((p&&p.imgpos)||"").trim().toLowerCase(); if(!v) return "";
+      if(v==="contain") return ' style="object-fit:contain;background:#fff"';
+      var map={top:"50% 0%",arriba:"50% 0%",bottom:"50% 100%",abajo:"50% 100%",left:"0% 50%",izquierda:"0% 50%",right:"100% 50%",derecha:"100% 50%",center:"50% 50%",centro:"50% 50%"};
+      var pos=map[v]||v;
+      return ' style="object-position:'+esc(pos)+'"';
+    }
     function tbl(k){return Array.isArray(AURUM[k])?AURUM[k]:[];}
     var PH_IC='<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>';
     function phName(name){ return '<div class="ph"><span class="ph-ic">'+PH_IC+'</span>'+(name?'<span class="ph-nm">'+esc(name)+'</span>':'')+'</div>'; }
-    function liveRows(arr){ return DZ() ? (arr||[]) : (arr||[]).filter(function(r){ return String((r&&r.name)||"").trim(); }); }
+    function isHid(r){ return truthy(r&&r.oculto); }
+    function liveRows(arr){ return DZ() ? (arr||[]) : (arr||[]).filter(function(r){ return String((r&&r.name)||"").trim() && !isHid(r); }); }
     function actionLink(p,kind){
       var b=linkBtn(p,kind); if(b) return b;
       if(DZ() && p && p.id){ return '<button class="add-link" data-edit="'+esc(idTable(p.id))+'|'+esc(p.id)+'">+ '+(kind==="service"?"contacto del proveedor":"enlace de compra")+'</button>'; }
       return "";
     }
-    function catalogTotal(){ var t=0; ["products","lighting","hardware","equipment","carpentry","finishes"].forEach(function(k){ tbl(k).forEach(function(p){ if(num(p.price)>0) t+=num(p.price)*qn(p.qty); }); }); return t; }
+    function catalogTotal(){ var t=0; ["products","lighting","hardware","equipment","carpentry","finishes"].forEach(function(k){ tbl(k).forEach(function(p){ if(num(p.price)>0 && !isHid(p)) t+=num(p.price)*qn(p.qty); }); }); return t; }
     function totalM2(){ var t=0; tbl("spaces").forEach(function(s){ String(s.surface||"").replace(/,/g,".").split("+").forEach(function(p){ var n=parseFloat(p); if(!isNaN(n)) t+=n; }); }); return t; }
     var LEVEL_ORDER=["Planta Baja","Planta Alta","Exterior"];
     function levelGroup(s){
@@ -805,8 +824,8 @@ button:focus:not(:focus-visible){outline:none}
     function buildIndexes(){
       BUYABLE = []
         .concat(tbl("products"),tbl("lighting"),tbl("hardware"),tbl("equipment"),tbl("carpentry"))
-        .filter(function(p){return p && p.id;})
-        .concat(tbl("finishes").filter(function(f){return f && f.id;}));
+        .filter(function(p){return p && p.id && !isHid(p);})
+        .concat(tbl("finishes").filter(function(f){return f && f.id && !isHid(f);}));
       BUY_BY_ID={}; OPT_GROUPS={};
       BUYABLE.forEach(function(p){
         BUY_BY_ID[p.id]=p;
@@ -968,10 +987,10 @@ button:focus:not(:focus-visible){outline:none}
           '<span class="opt-price">'+(priced?money(p.price):'')+'</span>'+
           '<span class="opt-check"></span>'+
         '</button>';
-        return DZ()? '<div class="opt-line">'+btn+pinBtn(idTable(p.id),p.id)+'</div>' : btn;
+        return DZ()? '<div class="opt-line'+(isHid(p)?" is-hidden":"")+'">'+btn+pinBtn(idTable(p.id),p.id)+eyeBtn(idTable(p.id),p.id,p)+'</div>' : btn;
       }).join("");
       return '<article class="item opt-card2">'+
-        '<div class="imgwrap" '+(hImg?'data-zoom="'+esc(hImg)+'"':"")+'>'+(hImg?'<img src="'+esc(hImg)+'" alt="'+esc(prettyGroup(groupKey))+'" loading="lazy">':phName(prettyGroup(groupKey)))+'</div>'+
+        '<div class="imgwrap" '+(hImg?'data-zoom="'+esc(hImg)+'"':"")+'>'+(hImg?'<img src="'+esc(hImg)+'" alt="'+esc(prettyGroup(groupKey))+'"'+imgStyle(chosen)+' loading="lazy">':phName(prettyGroup(groupKey)))+'</div>'+
         '<div class="body">'+
           '<span class="opt-tag">'+items.length+' opciones · elige una</span>'+
           '<h4>'+esc(prettyGroup(groupKey))+'</h4>'+
@@ -997,14 +1016,14 @@ button:focus:not(:focus-visible){outline:none}
       var buy=!!BUY_BY_ID[p.id], priced=num(p.price)>0;
       var img=imgUrl(p.img);
       var imgwrap='<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+
-        (img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':phName(p.name))+
+        (img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'"'+imgStyle(p)+' loading="lazy">':phName(p.name))+
         (p.opcion?'<span class="opt">Opción '+esc(p.opcion)+'</span>':"")+'</div>';
       var attrs=[]; if(p.material)attrs.push(esc(p.material)); if(p.dims)attrs.push(esc(p.dims));
       var prov=[p.brand,p.sku].filter(Boolean).map(esc).join(" · ");
       var priceHtml=priced?'<span class="price">'+money(p.price)+(qn(p.qty)>1?' <small style="font-size:12px;color:var(--ink-3)">×'+qn(p.qty)+'</small>':'')+'</span>'
                           :'<span class="price obra">Por definir</span>';
       var selBtn=buy?'<button class="sel-btn'+(isSel(p.id)?" on":"")+'" data-sel="'+esc(p.id)+'">'+(isSel(p.id)?'<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Incluido':'Incluir')+'</button>':'';
-      return '<article class="item'+(buy&&isSel(p.id)?" sel":"")+'">'+imgwrap+pinWrap(idTable(p.id),p.id)+
+      return '<article class="item'+(buy&&isSel(p.id)?" sel":"")+(isHid(p)?" is-hidden":"")+'">'+imgwrap+pinWrap(idTable(p.id),p.id,p)+
         '<div class="body">'+
           '<h4>'+esc(p.name||"—")+'</h4>'+
           (prov?'<p class="prov">'+prov+'</p>':"")+
@@ -1028,19 +1047,19 @@ button:focus:not(:focus-visible){outline:none}
       var priced=num(f.price)>0, buy=!!BUY_BY_ID[f.id];
       var sel=buy&&isSel(f.id);
       var loc=f.type?'<span class="fin-tag">'+esc(f.type)+'</span>':'';
-      return '<div class="fin-row'+(sel?" sel":"")+'">'+
+      return '<div class="fin-row'+(sel?" sel":"")+(isHid(f)?" is-hidden":"")+'">'+
         '<div class="fin-main">'+loc+'<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+[f.space,f.finish].filter(Boolean).map(esc).join(" · ")+'</p></div></div>'+
         '<div class="col">'+esc([f.brand,f.sku].filter(Boolean).join(" · "))+'</div>'+
         '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':' · <b style="color:var(--ink-3);font-weight:400">Por definir</b>')+'</div>'+
-        '<div class="fin-act">'+(buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="obra-tag">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+'</div>'+
+        '<div class="fin-act">'+(buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="obra-tag">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+eyeBtn("finishes",f.id,f)+'</div>'+
       '</div>';
     }
 
     /* ---- carpentry ---- */
     function carpentryCard(p){
       var img=imgUrl(p.img), priced=num(p.price)>0, sel=isSel(p.id);
-      return '<article class="item'+(sel?" sel":"")+'">'+
-        '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'" loading="lazy">':phName(p.name))+'</div>'+pinWrap("carpentry",p.id)+
+      return '<article class="item'+(sel?" sel":"")+(isHid(p)?" is-hidden":"")+'">'+
+        '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+'"'+imgStyle(p)+' loading="lazy">':phName(p.name))+'</div>'+pinWrap("carpentry",p.id,p)+
         '<div class="body"><h4>'+esc(p.name||"—")+'</h4>'+
           ((p.space||p.dims)?'<p class="prov">'+esc(p.space||"")+(p.dims?' · '+esc(p.dims):"")+'</p>':"")+
           (p.materials?'<p class="attrs">'+esc(p.materials)+'</p>':"")+
@@ -1059,7 +1078,7 @@ button:focus:not(:focus-visible){outline:none}
     /* ---- spaces + dossier ---- */
     function spaceItemCount(name){
       var n=0; ["products","lighting","hardware","equipment","finishes","carpentry"].forEach(function(k){
-        n+=tbl(k).filter(function(x){return x.space===name;}).length;});
+        n+=liveRows(tbl(k)).filter(function(x){return x.space===name;}).length;});
       return n;
     }
     function roomCard(s){
@@ -1136,10 +1155,32 @@ button:focus:not(:focus-visible){outline:none}
         else if(g[2]==="gallery") html+='<div class="gallery">'+g[1].map(function(r){var im=imgUrl(r.img);return '<div class="gal-item"><img src="'+esc(im)+'" data-zoom="'+esc(im)+'" alt="'+esc(r.label||"")+'" loading="lazy"><div class="cap"><h4>'+esc(r.label||"—")+'</h4>'+(r.note?'<p>'+esc(r.note)+'</p>':"")+'</div></div>';}).join("")+'</div>';
         else if(g[2]==="carpentry") html+='<div class="grid-items">'+g[1].map(carpentryCard).join("")+'</div>';
         else html+=renderItemsGrid(g[1]);
+        html+=obsBlock(so,g[0]);
       } else html+=emptyNote("Aún no hay elementos asignados a este espacio");
       return html+'</div>';
     }
     function byS(name){return function(x){return x.space===name;};}
+    function obsKey(cat){ return "obs_"+String(cat||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_"); }
+    function obsBlock(spaceRec,cat){
+      if(!spaceRec || !spaceRec.name) return "";
+      var k=obsKey(cat), txt=String(spaceRec[k]||"").trim();
+      if(DZ()){
+        return '<div class="obs-block"><span class="obs-k">Observaciones · '+esc(cat)+'</span>'+
+          '<textarea data-obs="'+esc(k)+'" data-obsspace="'+esc(spaceRec.name)+'" placeholder="Notas para la cliente sobre esta categoría…">'+esc(txt)+'</textarea>'+
+          '<button class="obs-save" data-obssave="'+esc(k)+'">Guardar observaciones</button><span class="obs-state" id="obs-state-'+esc(k)+'"></span></div>';
+      }
+      return txt?'<div class="obs-block"><span class="obs-k">Observaciones</span><p>'+esc(txt)+'</p></div>':"";
+    }
+    function saveObs(k){
+      var ta=document.querySelector('textarea[data-obs="'+k+'"]'); if(!ta) return;
+      var name=ta.getAttribute("data-obsspace");
+      var rec=recOf("spaces",name); if(!rec) return;
+      rec[k]=ta.value;
+      var st=document.getElementById("obs-state-"+k); if(st) st.textContent="guardando…";
+      postSheet({action:"upsert",tab:"Espacios",keyField:"name",key:name,row:rec})
+        .then(function(){ if(st) st.textContent="guardado en el Sheet ✓"; })
+        .catch(function(){ if(st) st.textContent="guardado local; el Sheet no respondió"; });
+    }
     function specRow(k,v){ return '<div class="spec"><span>'+esc(k)+'</span><b>'+v+'</b></div>'; }
     function linkHref(raw){
       raw=String(raw||"").trim();
@@ -1402,20 +1443,20 @@ button:focus:not(:focus-visible){outline:none}
     var DESIGNER_FLAG="aurum_designer_v1";
     var ED=null;
     var SCHEMA={
-      products:  {tab:"Productos",   k:"id",  label:"producto",   pre:"p", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
-      lighting:  {tab:"Luminarias",  k:"id",  label:"luminaria",  pre:"l", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
-      hardware:  {tab:"Herrajes",    k:"id",  label:"herraje",    pre:"h", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
-      equipment: {tab:"Equipamiento",k:"id",  label:"equipo",     pre:"e", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img"]},
+      products:  {tab:"Productos",   k:"id",  label:"producto",   pre:"p", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img","imgpos"]},
+      lighting:  {tab:"Luminarias",  k:"id",  label:"luminaria",  pre:"l", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img","imgpos"]},
+      hardware:  {tab:"Herrajes",    k:"id",  label:"herraje",    pre:"h", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img","imgpos"]},
+      equipment: {tab:"Equipamiento",k:"id",  label:"equipo",     pre:"e", f:["id","name","category","space","brand","sku","material","dims","price","qty","grupo","opcion","url","img","imgpos"]},
       finishes:  {tab:"Acabados",    k:"id",  label:"acabado",    pre:"f", f:["id","type","name","finish","space","brand","sku","area","price","qty","url"]},
-      carpentry: {tab:"Carpinteria", k:"id",  label:"carpintería",pre:"c", f:["id","name","space","dims","materials","finish","note","price","qty","url","img"]},
+      carpentry: {tab:"Carpinteria", k:"id",  label:"carpintería",pre:"c", f:["id","name","space","dims","materials","finish","note","price","qty","url","img","imgpos"]},
       spaces:    {tab:"Espacios",    k:"name",label:"espacio",    pre:"",  f:["name","level","surface","dims","floor","ceiling","walls","budget"]},
       renders:   {tab:"Renders",     k:"__i", label:"render",     pre:"",  f:["space","label","note","img"]},
       planos:    {tab:"Planos",      k:"__i", label:"plano",      pre:"",  f:["title","space","note","img"]}
     };
     var NUMF={price:1,qty:1,budget:1};
     var TAREA={note:1,walls:1,materials:1};
-    var SELECTF={type:["Piso","Muro","Techo","Cubierta"]};
-    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra o contacto (URL / WhatsApp / correo)",img:"Imagen (link de Drive)",type:"Ubicación (Piso / Muro / Techo / Cubierta)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título"};
+    var SELECTF={type:["Piso","Muro","Techo","Cubierta"],imgpos:["top","center","bottom","left","right","contain"]};
+    var FLABEL={id:"ID (único)",name:"Nombre",category:"Categoría",space:"Espacio",brand:"Marca",sku:"SKU / modelo",material:"Material",dims:"Medidas",price:"Precio (MXN)",qty:"Cantidad",grupo:"Grupo A/B (ej. sofá-sala)",opcion:"Opción (A / B)",url:"Liga de compra o contacto (URL / WhatsApp / correo)",img:"Imagen (link de Drive)",type:"Ubicación (Piso / Muro / Techo / Cubierta)",finish:"Acabado",area:"Área",materials:"Materiales",note:"Nota",level:"Nivel",surface:"Superficie (m²)",floor:"Piso",ceiling:"Plafón",walls:"Muros",budget:"Presupuesto (MXN)",label:"Título",title:"Título",imgpos:"Acomodo de foto (vacío = automático; contain = completa)",oculto:"Oculto (1 = no se muestra al cliente)"};
 
     function DZ(){ return !!state.designer; }
     function assign(t){ for(var i=1;i<arguments.length;i++){ var s=arguments[i]; if(s) for(var k in s) if(Object.prototype.hasOwnProperty.call(s,k)) t[k]=s[k]; } return t; }
@@ -1428,7 +1469,18 @@ button:focus:not(:focus-visible){outline:none}
     /* --- pines + botón agregar (solo en modo diseñadora) --- */
     var PEN='<svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
     function pinBtn(table,key){ if(!DZ()) return ""; if(key===""||key==null||!table) return ""; return '<button class="ed-pin" data-edit="'+esc(table)+'|'+esc(key)+'" title="Editar" aria-label="Editar">'+PEN+'</button>'; }
-    function pinWrap(table,key){ var b=pinBtn(table,key); return b? '<div class="ed-pinwrap">'+b+'</div>' : ""; }
+    function pinWrap(table,key,rec){ var b=pinBtn(table,key)+(rec!==undefined?eyeBtn(table,key,rec):""); return b? '<div class="ed-pinwrap">'+b+'</div>' : ""; }
+    var EYE='<svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+    var EYEOFF='<svg viewBox="0 0 24 24"><path d="M3.5 12s3.3-5.5 8.5-5.5c1.6 0 3 .4 4.2 1M20.5 12S17.2 17.5 12 17.5c-1.6 0-3-.4-4.2-1"/><path d="M5 19L19 5"/></svg>';
+    function eyeBtn(table,key,rec){ if(!DZ()) return ""; if(key===""||key==null||!table) return ""; var hid=isHid(rec); return '<button class="ed-pin ed-eye'+(hid?" off":"")+'" data-hide="'+esc(table)+'|'+esc(key)+'" title="'+(hid?"Oculto al cliente — clic para mostrar":"Visible — clic para ocultar al cliente")+'" aria-label="Ocultar o mostrar">'+(hid?EYEOFF:EYE)+'</button>'; }
+    function toggleHide(table,key){
+      var rec=recOf(table,key); if(!rec) return;
+      rec.oculto = isHid(rec) ? "" : 1;
+      loadSelection(); render();
+      var sc=SCHEMA[table]; if(!sc) return;
+      var payload=(sc.k==="__i")?{action:"setRow",tab:sc.tab,index:Number(key),row:rec}:{action:"upsert",tab:sc.tab,keyField:sc.k,key:rec[sc.k],row:rec};
+      postSheet(payload).catch(function(){});
+    }
     function addBtn(table){ return DZ()? '<button class="ed-add" data-add="'+esc(table)+'"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none"><path d="M12 5v14M5 12h14"/></svg>Agregar</button>' : ""; }
 
     function setDesignerBar(){
@@ -1643,6 +1695,8 @@ button:focus:not(:focus-visible){outline:none}
       if(e.target.closest("#dzHist")){ openHist(); return; }
       if(e.target.closest("#dzOut")){ exitDesigner(); return; }
       if((t=e.target.closest("[data-ed]"))){ var ea=t.getAttribute("data-ed"); if(ea==="save")edSave(); else if(ea==="del")edDelete(); else closeEd(); return; }
+      if((t=e.target.closest("[data-hide]"))){ var phh=t.getAttribute("data-hide").split("|"); toggleHide(phh[0], phh[1]); return; }
+      if((t=e.target.closest("[data-obssave]"))){ saveObs(t.getAttribute("data-obssave")); return; }
       if((t=e.target.closest("[data-edit]"))){ var pr=t.getAttribute("data-edit").split("|"); openEd(pr[0], pr[1]||""); return; }
       if((t=e.target.closest("[data-add]"))){ var pa=t.getAttribute("data-add").split("|"); openEd(pa[0]); if(pa[1]&&ED&&ED.rec){ ED.rec.category=pa[1]; renderRowEditor(); } return; }
       if(e.target.closest("#gateGo")){ tryGate(); return; }
