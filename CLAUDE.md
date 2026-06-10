@@ -12,10 +12,24 @@ Muy avanzado, en uso (desplegado en GitHub Pages, conectado al Sheet). Los pendi
 2. **Ocultar/mostrar sin borrar** (columna `oculto` en hojas de piezas): "ojito" junto al lápiz en modo diseñadora (toggle + upsert inmediato); en cliente, `liveRows()` filtra `oculto` truthy, y los ocultos quedan fuera de BUYABLE/selección/totales/PDF. En diseñadora la pieza oculta se ve atenuada (.is-hidden).
 3. **Acomodo de foto** (columna `imgpos`): select en el editor (top/center/bottom/left/right/contain); `imgStyle()` lo aplica como object-position (o object-fit:contain) en itemCard, optionCard y carpentryCard. Vacío = automático. Acepta también valores custom tipo "50% 20%".
 
+**Paquete de mejoras (2026-06-09, segunda tanda, todas implementadas y validadas):**
+- Imágenes: tarjetas cargan miniatura Drive `w400` (lightbox/zoom sigue en `w1600`), fade-in al cargar (`#app img.ld` + listener global + `scanImgs()`), preconnect a lh3/drive.
+- Compartir: `og:image`/`og:url`/`twitter:card large` con el render principal (id fijo en el head; si cambia el hero, actualizar esa meta).
+- Dossier: botones ← espacio anterior / siguiente → (`.dnav`) y "Siguiente: <categoría> →" (`.catnext`) al final de cada grupo.
+- Lightbox: swipe táctil (touchstart/touchend en `#lb`).
+- Barra de selección: total con clase `ok`/`over` según presupuesto global (suma de budget de Espacios), pulso al incluir (`#selTotalFig.pulse`), compacta en móvil.
+- PDF: observaciones `obs_*` por espacio (`.pobsw`) y pie "Generado el <fecha> · v<versión>" (`.pfoot`).
+- Robustez: cola de escrituras `aurum_postq_v1` con reintento (evento online + cada 45 s) + toast global (`showToast`); fallos de POST en editor/ojito/obs/eliminar van a la cola.
+- Ojito: toast "Pieza oculta — Deshacer".
+- Editor: botón Duplicar (id nuevo + " (copia)" + upsert), preview de imagen (`.ed-prev`, se actualiza al teclear), valida precio no numérico (limpia $ y comas) e id duplicado.
+- Datos: badge "En vivo · hace X min" (refresca cada minuto), auto-refresh cada 10 min si la pestaña está visible y el editor cerrado; si el JSON no cambió, no re-renderiza.
+- A11y: `:focus-visible` con contorno, `--ink-3` más oscuro (#8a7e6f) para contraste.
+
 **Pendiente / bugs:**
-- Una fila de acabado sin `id` no se puede incluir (muestra "Obra") → ponerle id en el Sheet.
-- La hoja Acabados NO tiene columna `url` (termina en qty + oculto) → el botón de contacto en acabados no aparece; agregar columna si se desea.
 - Seguridad suave: repo público deja visibles `WRITE_SECRET` y la clave "Sayri" (mitigado por el gate; pendiente repo privado/rotar/proxy).
+- La fila de acabado sin `id` ya NO existe (verificado vía API 2026-06-09).
+- Columna `url` agregada a Acabados (L1) el 2026-06-09 — el botón de contacto en acabados ya es posible; basta llenar la celda.
+- Opcional no implementado: columna `orden` para controlar el acomodo de tarjetas (tocaría estructura; decisión de Alejandro).
 
 ## Columnas agregadas al Sheet (2026-06-09, ya hechas)
 
@@ -73,9 +87,13 @@ Frontend single-file HTML+CSS+JS vanilla (sin build); fuentes Fraunces/Inter/Spl
 - **Front:** editar HTML → subir al repo (raíz) → Ctrl+Shift+R.
 - **Back:** pegar Code.gs → Administrar implementaciones → lápiz → Nueva versión → Implementar (conserva `/exec`). NUNCA crear implementación nueva.
 
+## Validación
+
+Harness jsdom (carga el HTML real con fetch stubbeado): 46 pruebas en dos suites — filtrado de ocultos, BUYABLE, obs cliente/diseñadora, imgpos, grupos A/B, miniaturas w400 vs zoom w1600, nav del dossier, selbar ok/over+pulso, toast, cola offline→flush, duplicar, validaciones del editor, PDF con obs y fecha. Correr antes de cada entrega.
+
 ## Siguiente paso
 
-Probar en producción con datos reales: poner una observación, ocultar una pieza y ajustar un `imgpos` desde el modo diseñadora, y verificar que persisten tras recargar. Después, a elección: corregir la fila de acabado sin `id`; agregar columna `url` a Acabados; o atender la seguridad (repo privado/rotar secreto/proxy).
+Probar en producción como diseñadora (ocultar pieza, observación, imgpos, duplicar) y como cliente en móvil (swipe del lightbox, barra compacta). Después, a elección: seguridad (repo privado/rotar secreto/proxy) o columna opcional `orden`.
 
 ## Preferencias de trabajo
 
