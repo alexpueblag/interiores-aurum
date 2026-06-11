@@ -1847,7 +1847,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     }
     function showLB(){
       var it=LB.list[LB.i]||{src:"",cap:""};
-      var img=document.getElementById("lbimg"); img.style.opacity=0; img.src=it.src; setTimeout(function(){img.style.opacity=1;},20);
+      var img=document.getElementById("lbimg");
+      /* resetear estado de respaldo: cada imagen del lightbox empieza limpia */
+      img.style.display=""; img.removeAttribute("data-fb"); img.removeAttribute("data-fb2");
+      if(img.parentNode){ var oldPh=img.parentNode.querySelector(".ph"); if(oldPh) img.parentNode.removeChild(oldPh); }
+      img.style.opacity=0; img.src=it.src; setTimeout(function(){img.style.opacity=1;},20);
       document.getElementById("lbcap").textContent=it.cap||"";
       var multi=LB.list.length>1;
       document.getElementById("lbcount").textContent=multi?(LB.i+1)+" / "+LB.list.length:"";
@@ -1859,7 +1863,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     document.getElementById("lb").addEventListener("click",function(e){
       if(e.target.closest("#lbPrev")){ lbStep(-1); return; }
       if(e.target.closest("#lbNext")){ lbStep(1); return; }
-      if(e.target.closest("#lbx") || e.target===this){ this.classList.remove("on"); document.getElementById("lbimg").src=""; }
+      if(e.target.closest("#lbx") || e.target===this){ this.classList.remove("on"); document.getElementById("lbimg").removeAttribute("src"); }
     });
     (function(){ var sx=null, sy=null, lbEl=document.getElementById("lb");
       lbEl.addEventListener("touchstart",function(e){ if(e.touches.length===1){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; } },{passive:true});
@@ -1890,6 +1894,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     document.addEventListener("error", function(e){
       var img=e.target; if(!img || img.tagName!=="IMG") return;
       var src=img.getAttribute("src")||"";
+      if(!src) return; /* src vacío (p.ej. al cerrar el lightbox) no es una imagen rota */
       var m=src.match(/[?&]id=([-\w]{16,})/)||src.match(/googleusercontent\.com\/d\/([-\w]{16,})/);
       var id=m?m[1]:"";
       if(id && !img.getAttribute("data-fb")){ img.setAttribute("data-fb","1"); img.src="https://lh3.googleusercontent.com/d/"+id+"=w1600"; return; }
