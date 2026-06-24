@@ -742,17 +742,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     /* ============ ACCESO + PROYECTOS ============ */
     var UNLOCK_KEY = "aurum_unlock_v1";
     var TYPES = SECTIONS.filter(function(s){ return s.key!=="concepto" && s.key!=="espacios"; });
-    /* El board (lista de residencias) es abierto; el interior de cada residencia pide su clave.
-       Hoy 1 con datos en vivo (Navarro Muñoz) + 5 próximas. Las portadas son las fachadas reales
-       de cada residencia Aurum (mismas del cuestionario de Arquitectura de Autor → img/fachada-*.jpg).
-       Si se llena la hoja "Proyectos" del Sheet, normalizeProjects() la sobrescribe. */
+    /* FUENTE DE VERDAD = hoja "Proyectos" del Sheet (id,name,sub,active,key,cover,url).
+       doGet la entrega en _projects y normalizeProjects() la usa SIEMPRE que tenga filas.
+       Este arreglo es SOLO un salvavidas mínimo por si el Sheet no responde: no agregar
+       aquí residencias ni fachadas — todo eso se administra en la hoja Proyectos. */
     var PROJECTS = [
-      { id:"rnm",       name:"Residencia Navarro Muñoz", sub:"Las Riberas · Hermosillo",        active:true,  key:"Mona", cover:"img/fachada-mona.jpg" },
-      { id:"aria",      name:"Casa Aria",      sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-aria.jpg" },
-      { id:"maria",     name:"Casa María",     sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-minimalista.jpg" },
-      { id:"zara",      name:"Casa Zara",      sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-mediterraneo.jpg" },
-      { id:"barcelona", name:"Casa Barcelona", sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-industrial.jpg" },
-      { id:"rita",      name:"Casa Rita",      sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-clasico.jpg" }
+      { id:"rnm", name:"Residencia Navarro Muñoz", sub:"Las Riberas · Hermosillo", active:true, key:"Mona" }
     ];
     function projectById(id){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id===id) return PROJECTS[i]; } return null; }
     function unlockedIds(){ try{ return JSON.parse(localStorage.getItem(UNLOCK_KEY))||[]; }catch(e){ return []; } }
