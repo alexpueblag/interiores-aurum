@@ -25,6 +25,11 @@ Muy avanzado, en uso (desplegado en GitHub Pages, conectado al Sheet). Los pendi
 - Datos: badge "En vivo · hace X min" (refresca cada minuto), auto-refresh cada 10 min si la pestaña está visible y el editor cerrado; si el JSON no cambió, no re-renderiza.
 - A11y: `:focus-visible` con contorno, `--ink-3` más oscuro (#8a7e6f) para contraste.
 
+**Cambios 2026-06-24 (integración + feedback de Sayri):**
+1. **Portada con fachadas reales.** El fallback `PROJECTS` ya no son dummies "en preparación" sin foto: son las 6 residencias Aurum con su fachada real de portada, las mismas del cuestionario de Arquitectura de Autor (copiadas a `img/fachada-*.jpg`). Mapeo: Navarro Muñoz=`fachada-mona.jpg` (única activa, clave Mona), Casa Aria=`fachada-aria.jpg`, Casa María=`fachada-minimalista.jpg`, Casa Zara=`fachada-mediterraneo.jpg`, Casa Barcelona=`fachada-industrial.jpg`, Casa Rita=`fachada-clasico.jpg`. Las 5 sin board van `active:false` ("Próximamente", atenuadas a opacity .6). Si se llena la hoja `Proyectos` del Sheet, `normalizeProjects()` la sigue sobrescribiendo. `cover` acepta rutas locales del repo porque `imgUrl()` deja pasar tal cual lo que no es link de Drive.
+2. **Acabados sin precio = "Incluido en obra"** (antes "Por definir"). En `finRow()`: los acabados ya van incluidos en el catálogo de conceptos de obra; solo los extras llevan precio. Se limpia el `—` del área para que no quede "— · …". En el PDF, esos acabados muestran "En obra" en la columna de precio (no "$0") y no suman al total.
+3. **Medidas visibles en fichas de productos** (feedback Sayri: se truncaban). Antes `dims` iba concatenado con el material en `.attrs`, que se trunca a una línea (`text-overflow:ellipsis`, regla CSS de `.item .prov,.attrs`). Ahora `itemCard()` saca las medidas a una línea propia `.dims` (etiqueta "Medidas" en mono + valor en Poppins tabular, sin truncar). En `optionCard()` la medida va PRIMERO en `.opt-sub` (resaltada en `.odim`) y la línea ya no se trunca, para comparar opciones A/B por dimensión.
+
 **Pendiente / bugs:**
 - Seguridad suave: repo público deja visibles `WRITE_SECRET` y la clave "Sayri" (mitigado por el gate; pendiente repo privado/rotar/proxy).
 - La fila de acabado sin `id` ya NO existe (verificado vía API 2026-06-09).

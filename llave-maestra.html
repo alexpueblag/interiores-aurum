@@ -134,6 +134,8 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .item h4{font-family:var(--serif);font-weight:440;font-size:17px;margin:0;line-height:1.2}
 .item .prov{font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--ink-2);margin:0}
 .item .attrs{font-size:12.5px;color:var(--ink-2);margin:0;line-height:1.5}
+.item .dims{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 8px;margin:0;font-family:"Poppins",sans-serif;font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--ink);line-height:1.4}
+.item .dims .dlab{font-family:var(--mono);font-size:9px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);flex:none}
 .item .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
 .item .price{font-family:var(--serif);font-size:18px;font-variant-numeric:tabular-nums}
 .item .price.obra{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
@@ -299,7 +301,8 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .opt-thumb{flex:none;width:38px;height:38px;border-radius:6px;background-size:cover;background-position:center;background-color:var(--paper-2)}
 .opt-info{flex:1;min-width:0}
 .opt-name{display:block;font-family:var(--serif);font-size:15px;line-height:1.2}
-.opt-sub{display:block;font-family:var(--mono);font-size:10.5px;color:var(--ink-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt-sub{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-top:3px;line-height:1.35;white-space:normal}
+.opt-sub .odim{color:var(--ink);font-variant-numeric:tabular-nums}
 .opt-price{font-family:var(--serif);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .opt-check{flex:none;width:18px;height:18px;border-radius:50%;border:1px solid var(--line-2)}
 .opt-row.on .opt-check{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--card)}
@@ -508,6 +511,7 @@ button:focus:not(:focus-visible){outline:none}
 #printDoc .pn{font-family:var(--serif);font-size:13px}
 #printDoc .pn .pb{display:block;font-family:var(--mono);font-size:10px;color:#777;margin-top:2px}
 #printDoc .pln{font-family:var(--serif)}
+#printDoc .pobra{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#888}
 #printDoc .psub{text-align:right;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#444;margin:6px 0 0}
 #printDoc .psub b{font-family:var(--serif);font-size:14px;color:#000}
 #printDoc .ptot{font-family:var(--serif);font-size:18px;text-align:right;margin-top:18px;border-top:2px solid #000;padding-top:10px}
@@ -739,13 +743,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     var UNLOCK_KEY = "aurum_unlock_v1";
     var TYPES = SECTIONS.filter(function(s){ return s.key!=="concepto" && s.key!=="espacios"; });
     /* El board (lista de residencias) es abierto; el interior de cada residencia pide su clave.
-       Por ahora 1 real (datos en vivo) + 4 dummy. Al final esto vivirá en una hoja "Proyectos" del Sheet matriz. */
+       Hoy 1 con datos en vivo (Navarro Muñoz) + 5 próximas. Las portadas son las fachadas reales
+       de cada residencia Aurum (mismas del cuestionario de Arquitectura de Autor → img/fachada-*.jpg).
+       Si se llena la hoja "Proyectos" del Sheet, normalizeProjects() la sobrescribe. */
     var PROJECTS = [
-      { id:"rnm", name:"Residencia Navarro Muñoz", sub:"Las Riberas · Hermosillo", active:true, key:"Mona" },
-      { id:"p2",  name:"Residencia en preparación", sub:"Próximamente", active:false },
-      { id:"p3",  name:"Residencia en preparación", sub:"Próximamente", active:false },
-      { id:"p4",  name:"Residencia en preparación", sub:"Próximamente", active:false },
-      { id:"p5",  name:"Residencia en preparación", sub:"Próximamente", active:false }
+      { id:"rnm",       name:"Residencia Navarro Muñoz", sub:"Las Riberas · Hermosillo",        active:true,  key:"Mona", cover:"img/fachada-mona.jpg" },
+      { id:"aria",      name:"Casa Aria",      sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-aria.jpg" },
+      { id:"maria",     name:"Casa María",     sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-minimalista.jpg" },
+      { id:"zara",      name:"Casa Zara",      sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-mediterraneo.jpg" },
+      { id:"barcelona", name:"Casa Barcelona", sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-industrial.jpg" },
+      { id:"rita",      name:"Casa Rita",      sub:"Programa de interiores en preparación", active:false, cover:"img/fachada-clasico.jpg" }
     ];
     function projectById(id){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id===id) return PROJECTS[i]; } return null; }
     function unlockedIds(){ try{ return JSON.parse(localStorage.getItem(UNLOCK_KEY))||[]; }catch(e){ return []; } }
@@ -1014,10 +1021,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       var hImg=imgUrl(chosen.img), hImgS=imgUrlSm(chosen.img);
       var rows=items.map(function(p){
         var sel=isSel(p.id), priced=num(p.price)>0;
-        var sub=[p.brand,p.dims].filter(Boolean).join(" · ");
+        var subParts=[]; if(p.dims)subParts.push('<span class="odim">'+esc(p.dims)+'</span>'); if(p.brand)subParts.push(esc(p.brand));
+        var sub=subParts.join(" · ");
         var btn='<button class="opt-row'+(sel?" on":"")+'" data-sel="'+esc(p.id)+'">'+
           '<span class="opt-letter">'+esc(p.opcion||"·")+'</span>'+
-          '<span class="opt-info"><span class="opt-name">'+esc(p.name||"—")+'</span>'+(sub?'<span class="opt-sub">'+esc(sub)+'</span>':'')+'</span>'+
+          '<span class="opt-info"><span class="opt-name">'+esc(p.name||"—")+'</span>'+(sub?'<span class="opt-sub">'+sub+'</span>':'')+'</span>'+
           '<span class="opt-price">'+(priced?money(p.price):'')+'</span>'+
           '<span class="opt-check"></span>'+
         '</button>';
@@ -1052,7 +1060,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       var imgwrap='<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+
         (img?'<img src="'+esc(imgS)+'" alt="'+esc(p.name)+'"'+imgStyle(p)+' loading="lazy">':phName(p.name))+
         (p.opcion?'<span class="opt">Opción '+esc(p.opcion)+'</span>':"")+'</div>';
-      var attrs=[]; if(p.material)attrs.push(esc(p.material)); if(p.dims)attrs.push(esc(p.dims));
+      var attrs=[]; if(p.material)attrs.push(esc(p.material));
+      var dimsHtml=p.dims?'<p class="dims"><span class="dlab">Medidas</span>'+esc(p.dims)+'</p>':"";
       var prov=[p.brand,p.sku].filter(Boolean).map(esc).join(" · ");
       var priceHtml=priced?'<span class="price">'+money(p.price)+(qn(p.qty)>1?' <small style="font-size:12px;color:var(--ink-3)">×'+qn(p.qty)+'</small>':'')+'</span>'
                           :'<span class="price obra">Por definir</span>';
@@ -1062,6 +1071,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
           '<h4>'+esc(p.name||"—")+'</h4>'+
           (prov?'<p class="prov">'+prov+'</p>':"")+
           (attrs.length?'<p class="attrs">'+attrs.join(" · ")+'</p>':"")+
+          dimsHtml+
           '<div class="actions">'+
             '<div class="foot">'+priceHtml+selBtn+'</div>'+
             actionLink(p,"buy")+
@@ -1081,10 +1091,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       var priced=num(f.price)>0, buy=!!BUY_BY_ID[f.id];
       var sel=buy&&isSel(f.id);
       var loc=f.type?'<span class="fin-tag">'+esc(f.type)+'</span>':'';
+      var areaTxt=String(f.area==null?"":f.area).trim(); if(areaTxt==="—"||areaTxt==="-")areaTxt="";
+      /* sin precio = ya va incluido en el catálogo de conceptos de obra; solo los extras llevan precio */
+      var priceTxt=priced?'<b>'+money(f.price)+'</b>':'<b style="color:var(--ink-3);font-weight:400">Incluido en obra</b>';
       return '<div class="fin-row'+(sel?" sel":"")+(isHid(f)?" is-hidden":"")+'">'+
         '<div class="fin-main">'+loc+'<div><p class="nm">'+esc(f.name||"—")+'</p><p class="sm">'+[f.space,f.finish].filter(Boolean).map(esc).join(" · ")+'</p></div></div>'+
         '<div class="col">'+esc([f.brand,f.sku].filter(Boolean).join(" · "))+'</div>'+
-        '<div class="col">'+esc(f.area||"")+(priced?' · <b>'+money(f.price)+'</b>':' · <b style="color:var(--ink-3);font-weight:400">Por definir</b>')+'</div>'+
+        '<div class="col">'+(areaTxt?esc(areaTxt)+' · ':'')+priceTxt+'</div>'+
         '<div class="fin-act">'+(buy?'<button class="sel-btn'+(sel?" on":"")+'" data-sel="'+esc(f.id)+'">'+(sel?"Incluido":"Incluir")+'</button>':'<span class="obra-tag">Obra</span>')+linkMini(f,"service")+pinBtn("finishes",f.id)+eyeBtn("finishes",f.id,f)+'</div>'+
       '</div>';
     }
@@ -1332,10 +1345,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         order.forEach(function(sp){
           var sub=0, rows="";
           bySpace[sp].forEach(function(p){ var line=num(p.price)*qn(p.qty); sub+=line; grand+=line;
+            var finIncl=(!!p.type)&&num(p.price)<=0;  /* acabado sin precio: ya incluido en la obra, no suma $ */
+            var unitTxt=finIncl?'<span class="pobra">En obra</span>':money(p.price);
+            var lineTxt=finIncl?'<span class="pobra">—</span>':money(line);
             rows+='<tr><td class="pn">'+esc(p.name)+(p.opcion?' · op. '+esc(p.opcion):'')+(([p.brand,p.sku].filter(Boolean).length)?'<span class="pb">'+esc([p.brand,p.sku].filter(Boolean).join(" · "))+'</span>':'')+'</td>'+
               '<td class="num">'+(qn(p.qty)>1?'×'+qn(p.qty):'')+'</td>'+
-              '<td class="num">'+money(p.price)+'</td>'+
-              '<td class="num pln">'+money(line)+'</td></tr>';
+              '<td class="num">'+unitTxt+'</td>'+
+              '<td class="num pln">'+lineTxt+'</td></tr>';
           });
           var srec=tbl("spaces").filter(function(x){return x.name===sp;})[0], obsH="";
           if(srec){ OBS_CATS.forEach(function(cN){ var v=String(srec[obsKey(cN)]||"").trim(); if(v) obsH+='<p class="pobs"><b>'+esc(cN)+':</b> '+esc(v)+'</p>'; }); }
