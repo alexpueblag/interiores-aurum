@@ -252,7 +252,14 @@ body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 .landing-h .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
 .landing-h h1{font-family:var(--serif);font-weight:340;font-size:clamp(30px,5vw,50px);letter-spacing:-.01em;margin:0 0 8px}
 .landing-h p{font-size:15px;color:var(--ink-2);margin:0}
-.grid-houses{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.grid-houses{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:760px){.grid-houses{grid-template-columns:repeat(4,1fr);gap:18px}}
+@media(max-width:759px){
+  .house-body{padding:11px 12px}
+  .house-body h3{font-size:15px;line-height:1.15}
+  .house-body p{font-size:11px}
+  .house-cover .tag{font-size:9px;padding:3px 8px;top:8px;left:8px}
+}
 .house-card{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:.2s;padding:0;font:inherit;color:inherit}
 .house-card:hover{border-color:var(--line-2);transform:translateY(-3px)}
 .house-card.locked{cursor:not-allowed;opacity:.6}
