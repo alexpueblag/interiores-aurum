@@ -616,6 +616,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 /* recortes consistentes */
 .item h4{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .item .prov,.item .attrs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item.carp .prov,.item.carp .attrs{white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word}
 .opt-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 /* A/B: opciones de igual alto + botón abajo */
@@ -1125,7 +1126,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     /* ---- carpentry ---- */
     function carpentryCard(p){
       var img=imgUrl(p.img), imgS=imgUrlSm(p.img), priced=num(p.price)>0, sel=isSel(p.id);
-      return '<article class="item'+(sel?" sel":"")+(isHid(p)?" is-hidden":"")+'">'+
+      return '<article class="item carp'+(sel?" sel":"")+(isHid(p)?" is-hidden":"")+'">'+
         '<div class="imgwrap" '+(img?'data-zoom="'+esc(img)+'"':"")+'>'+(img?'<img src="'+esc(imgS)+'" alt="'+esc(p.name)+'"'+imgStyle(p)+' loading="lazy">':phName(p.name))+'</div>'+pinWrap("carpentry",p.id,p)+
         '<div class="body"><h4>'+esc(p.name||"—")+'</h4>'+
           ((p.space||p.dims)?'<p class="prov">'+esc(p.space||"")+(p.dims?' · '+esc(p.dims):"")+'</p>':"")+
