@@ -77,6 +77,7 @@ Frontend single-file HTML+CSS+JS vanilla (sin build); fuentes Fraunces/Inter/Spl
 9. Precios en Poppins.
 10. Validar con harness antes de entregar (jsdom: carga el HTML real, stub de fetch, prueba liveRows/BUYABLE/dossier/ojito/obs/imgpos).
 11. `oculto` se filtra en `liveRows()` y se excluye de BUYABLE para que selección, totales, resumen y PDF queden consistentes sin tocar cada render.
+12. **El texto que escribe la diseñadora SIEMPRE se muestra completo en las tarjetas (2026-06-25).** Se quitó el truncado de contenido editable: `.item h4` (títulos) y `.opt-name` ya no usan `-webkit-line-clamp`; `.item .prov`/`.item .attrs` pasan de `white-space:nowrap`+ellipsis a `white-space:normal`+`overflow-wrap:break-word`. Aplica parejo a producto, carpintería y opciones A/B (no es parche por tipo). La tarjeta crece y el grid (`grid-auto-rows` natural) se ajusta. La fila de opción (`.opt-row`) ahora es `flex-wrap:wrap` con `.opt-info{min-width:115px}` y `.opt-price{margin-left:auto}`: un nombre largo envuelve por palabra (nunca letra por letra) y el precio baja a su renglón en vez de aplastar el nombre. NO truncar: si la diseñadora pone más texto, debe verse. Lo único que queda en 1 línea son precios, pills de navegación (`.rj`), tags de acabado (`.fin-tag`) y el breadcrumb (no son texto editable libre).
 
 ## URLs y datos
 
