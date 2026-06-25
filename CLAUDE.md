@@ -72,7 +72,7 @@ Frontend single-file HTML+CSS+JS vanilla (sin build); fuentes Fraunces/Inter/Spl
 4. Escritura optimista local + POST (fluidez).
 5. Re-desplegar Apps Script conservando la URL `/exec` (no cambiar SHEET_URL). NUNCA crear implementación nueva.
 6. Dos claves (Mona cliente / Sayri diseñadora).
-7. Imágenes Drive vía thumbnail `sz=w1600`.
+7. Imágenes Drive vía **lh3.googleusercontent.com/d/ID=wN** (2026-06-25): se cambió desde `drive.google.com/thumbnail?...&sz=wN` porque thumbnail hace un **302 que redirige a lh3** en CADA imagen — usar lh3 directo quita ese salto (mismo servidor final, mismo rate-limit, ~más rápido). `imgUrl(u,w)` toma ancho (default 1600), `imgUrlSm`=400, portada=800. **Respaldo:** el listener global de error reintenta con thumbnail si una lh3 falla (antes era al revés). El que validó esto: curl (lh3 200 ~0.5s vs thumbnail con redirect ~2-4s). OJO: el navegador de playwright bloquea imágenes de Google (ambos endpoints fallan ahí) — validar con curl, no con el harness jsdom.
 8. Una categoría por pantalla y todo incluible (decisiones explícitas de Alejandro).
 9. Precios en Poppins.
 10. Validar con harness antes de entregar (jsdom: carga el HTML real, stub de fetch, prueba liveRows/BUYABLE/dossier/ojito/obs/imgpos).

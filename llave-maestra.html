@@ -824,15 +824,15 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
               (/^[-\w]{25,}$/.test(u) ? [null,u] : null);   /* pegaron solo el ID */
       return m ? m[1] : "";
     }
-    function imgUrl(u){
+    function imgUrl(u,w){
       if(!u) return "";
       u=String(u).trim();
       var id=driveId(u);
-      if(id) return "https://drive.google.com/thumbnail?id="+id+"&sz=w1600"; /* endpoint estable para <img> */
+      if(id) return "https://lh3.googleusercontent.com/d/"+id+"=w"+(w||1600); /* CDN de Google: sirve directo (sin la redirección 302 de thumbnail) y va por edge => más rápido. Si una falla, el listener de error reintenta con thumbnail. */
       if(/dropbox\.com/.test(u)) return u.replace("www.dropbox.com","dl.dropboxusercontent.com").replace(/[?&]dl=0/,"");
       return u; /* link genérico: el navegador lo carga aunque no traiga .jpg/.png */
     }
-    function imgUrlSm(u){ var x=imgUrl(u); return x.indexOf("sz=w1600")>=0 ? x.replace("sz=w1600","sz=w400") : x; }
+    function imgUrlSm(u){ return imgUrl(u,400); }
     function imgStyle(p){
       var v=String((p&&p.imgpos)||"").trim().toLowerCase(); if(!v) return "";
       if(v==="contain") return ' style="object-fit:contain;background:#fff"';
@@ -1154,7 +1154,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     function roomCard(s){
       var thumb=spaceThumb(s.name), st=spaceStatus(s.name);
       var cover='<div class="room-cover">'+
-        (thumb?'<img src="'+esc(thumb.indexOf("sz=w1600")>=0?thumb.replace("sz=w1600","sz=w400"):thumb)+'" alt="'+esc(s.name)+'" loading="lazy">':'<div class="ph">'+PH_IC+'<span>'+esc(s.name)+'</span></div>')+
+        (thumb?'<img src="'+esc(thumb.indexOf("=w1600")>=0?thumb.replace("=w1600","=w400"):thumb)+'" alt="'+esc(s.name)+'" loading="lazy" decoding="async">':'<div class="ph">'+PH_IC+'<span>'+esc(s.name)+'</span></div>')+
         '<span class="room-status '+st.cls+'">'+esc(st.label)+'</span></div>';
       var body='<div class="room-body">'+
         '<h3>'+esc(s.name)+'</h3>'+
@@ -1474,7 +1474,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       var m=AURUM.meta||{}, activeCover=imgUrl(m.heroRender);
       var cards=PROJECTS.map(function(pr){
         var cover=pr.cover?imgUrl(pr.cover):(pr.active?activeCover:"");
-        cover=cover.replace("sz=w1600","sz=w800");  /* portada: w800 es suficiente y pesa ~4x menos */
+        cover=cover.replace("=w1600","=w800");  /* portada: w800 es suficiente y pesa ~4x menos */
         var coverHtml=cover?'<img src="'+esc(cover)+'" alt="'+esc(pr.name)+'" loading="lazy" decoding="async">':'<div class="ph">'+esc((pr.name||"·").slice(0,1))+'</div>';
         var tag=pr.active?(pr.url?"Abrir":(isUnlocked(pr.id)?"Abierta":"Con clave")):"Próximamente";
         return '<button class="house-card'+(pr.active?"":" locked")+'" '+(pr.active?('data-project="'+esc(pr.id)+'"'):'disabled')+'>'+
@@ -1952,7 +1952,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       if(!src) return; /* src vacío (p.ej. al cerrar el lightbox) no es una imagen rota */
       var m=src.match(/[?&]id=([-\w]{16,})/)||src.match(/googleusercontent\.com\/d\/([-\w]{16,})/);
       var id=m?m[1]:"";
-      if(id && !img.getAttribute("data-fb")){ img.setAttribute("data-fb","1"); img.src="https://lh3.googleusercontent.com/d/"+id+"=w1600"; return; }
+      if(id && !img.getAttribute("data-fb")){ img.setAttribute("data-fb","1"); img.src="https://drive.google.com/thumbnail?id="+id+"&sz=w1600"; return; }
       if(!img.getAttribute("data-fb2")){ img.setAttribute("data-fb2","1"); var ph=document.createElement("div"); ph.className="ph"; ph.textContent="Sin imagen"; img.style.display="none"; if(img.parentNode) img.parentNode.appendChild(ph); }
     }, true);
     loadSelection();
