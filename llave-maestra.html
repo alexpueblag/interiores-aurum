@@ -792,6 +792,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
           active: (act==null? true : truthy(act)),
           key: (r.key||r.clave||""),
           cover: (r.cover||r.img||r.portada||r.imagen||""),
+          imgpos: (r.imgpos||r.acomodo||r.pos||""),   /* acomodo de la portada (top/center/bottom/contain…) editable desde el Sheet, igual que las piezas */
           url: (r.url||r.liga||r.link||"")
         };
       });
@@ -1474,8 +1475,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       var m=AURUM.meta||{}, activeCover=imgUrl(m.heroRender);
       var cards=PROJECTS.map(function(pr){
         var cover=pr.cover?imgUrl(pr.cover):(pr.active?activeCover:"");
-        cover=cover.replace("=w1600","=w800");  /* portada: w800 es suficiente y pesa ~4x menos */
-        var coverHtml=cover?'<img src="'+esc(cover)+'" alt="'+esc(pr.name)+'" loading="lazy" decoding="async">':'<div class="ph">'+esc((pr.name||"·").slice(0,1))+'</div>';
+        cover=cover.replace("=w1600","=w500");  /* portada: w500 alcanza para la tarjeta y pesa menos => carga más rápido */
+        var coverHtml=cover?'<img src="'+esc(cover)+'" alt="'+esc(pr.name)+'" loading="lazy" decoding="async"'+imgStyle(pr)+'>':'<div class="ph">'+esc((pr.name||"·").slice(0,1))+'</div>';
         var tag=pr.active?(pr.url?"Abrir":(isUnlocked(pr.id)?"Abierta":"Con clave")):"Próximamente";
         return '<button class="house-card'+(pr.active?"":" locked")+'" '+(pr.active?('data-project="'+esc(pr.id)+'"'):'disabled')+'>'+
           '<div class="house-cover">'+coverHtml+'<span class="tag">'+tag+'</span></div>'+
@@ -1483,8 +1484,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
         '</button>';
       }).join("");
       app.innerHTML='<div class="landing"><div class="landing-h fade">'+
-        '<p class="eyebrow">Aurum Arquitectos</p><h1>Residencias</h1>'+
-        '<p>Selecciona una residencia para ver su programa de interiores.</p></div>'+
+        '<p class="eyebrow">Aurum Arquitectos</p><h1>Diseño de Interiores Aurum</h1>'+
+        '<p>Selecciona un proyecto para ver su programa de interiores.</p></div>'+
         '<div class="grid-houses fade">'+cards+'</div></div>';
     }
 
