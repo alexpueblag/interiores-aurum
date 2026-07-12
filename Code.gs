@@ -9,10 +9,22 @@
  *            al Sheet. Valida un secreto y registra cada cambio.
  ****************************************************************/
 
-var SECRET = "aurum-rnm-2026";   // <-- debe ser IDÉNTICO al WRITE_SECRET del board
+/* Seguridad: nunca guardar credenciales en este archivo ni en el frontend.
+ * Configurar WRITE_SECRET, READS_ENABLED y WRITES_ENABLED en Script Properties.
+ * El deployment queda cerrado por defecto si faltan esas propiedades. */
+function securityConfig_(){
+  var p = PropertiesService.getScriptProperties();
+  return {
+    secret: p.getProperty("WRITE_SECRET") || "",
+    reads: p.getProperty("READS_ENABLED") === "true",
+    writes: p.getProperty("WRITES_ENABLED") === "true"
+  };
+}
 
 /* ============================ LECTURA ============================ */
 function doGet(e){
+  var sec = securityConfig_();
+  if(!sec.reads) return json({ ok:false, maintenance:true, error:"acceso temporalmente suspendido" });
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var out = {};
 
@@ -53,8 +65,10 @@ function doGet(e){
 /* ============================ ESCRITURA ============================ */
 function doPost(e){
   try{
+    var sec = securityConfig_();
+    if(!sec.writes) return json({ ok:false, error:"escrituras temporalmente suspendidas" });
     var p = JSON.parse(e.postData.contents);
-    if(p.secret !== SECRET) return json({ ok:false, error:"secreto invalido" });
+    if(!sec.secret || p.secret !== sec.secret) return json({ ok:false, error:"no autorizado" });
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var action = p.action, tab = p.tab;
