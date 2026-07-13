@@ -83,16 +83,16 @@ Frontend single-file HTML+CSS+JS vanilla (sin build); fuentes Fraunces/Inter/Spl
 
 - Tablero en vivo: https://alexpueblag.github.io/interiores-aurum/llave-maestra.html
 - Repo (público): https://github.com/alexpueblag/interiores-aurum (subir HTML a la RAÍZ)
-- API (SHEET_URL, ya en CONFIG): https://script.google.com/macros/s/AKfycbzwkO-JpncB9l_VGAJOQyxvkioyk9re2z50Gef_0FBsZKRsSR9DBGe2M50Lp511FAnu/exec
+- API (SHEET_URL): la URL /exec de la implementación NUEVA se pega en CONFIG.SHEET_URL (el deployment anterior quedó archivado en la contención 2026-07-12)
 - Google Sheet (16 hojas): https://docs.google.com/spreadsheets/d/1gRFwq27ec8nM6g_3LG7xW6ORpLhOyTWkPPUQWgAnsok/edit
-- CONFIG en el HTML: `ENTRY_KEY="Mona"`, `DESIGNER_KEY="Sayri"`, `WRITE_SECRET="aurum-rnm-2026"` (debe coincidir con el SECRET de Code.gs), `FETCH_TIMEOUT=10000`
+- CONFIG en el HTML: `SHEET_URL` (pegar tras redesplegar), `ENTRY_KEY="Mona"` (selector suave detrás del Portero), `FETCH_TIMEOUT=10000`. **Ya no hay secretos en el HTML**: el acceso lo gobierna el Portero YOD (portero.js; el backend exige la credencial `k` en cada petición) y la clave de diseñadora la valida el SERVIDOR contra `WRITE_SECRET` en Script Properties (rotar la anterior: quedó comprometida al estar publicada)
 - localStorage: `aurum_sel_v2`, `aurum_cache_v1`, `aurum_unlock_v1`; sessionStorage: `aurum_designer_v1`
 - 16 hojas: Meta, Concepto, Pilares, Paleta, Materiales, Mood, Productos (Mobiliario/Decoración/Textiles + A/B vía `grupo`+`opcion`), Luminarias, Herrajes, Equipamiento, Acabados (`type`=Piso/Muro/Techo/Cubierta), Carpinteria, Renders, Planos, Espacios, Proyectos, Historial
 
 ## Despliegue
 
 - **Front:** editar HTML → subir al repo (raíz) → Ctrl+Shift+R.
-- **Back:** pegar Code.gs → Administrar implementaciones → lápiz → Nueva versión → Implementar (conserva `/exec`). NUNCA crear implementación nueva.
+- **Back:** pegar Code.gs → Script Properties (`READS_ENABLED=true`, `WRITES_ENABLED=true`, `WRITE_SECRET` nuevo) → **Implementación NUEVA** (solo esta vez: el deployment viejo quedó archivado) → pegar la URL /exec en CONFIG.SHEET_URL. Después de eso, futuras versiones = lápiz → Nueva versión (conserva /exec). Ver SECURITY-DEPLOY.md.
 
 ## Validación
 
