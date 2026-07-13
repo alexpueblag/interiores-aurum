@@ -21,10 +21,37 @@ function securityConfig_(){
   };
 }
 
+/* ==================== AUTORIZACIÓN (Portero YOD) ==================== */
+/* El front manda la credencial del Portero (k) en cada petición y este
+ * backend la valida server-to-server contra el endpoint de canje del
+ * Portero. Sin credencial válida responde { ok:false, error:'liga' } y
+ * no entrega ni un dato (fail-closed). Caché por hash: 10 min. */
+var PORTERO_EXEC = 'https://script.google.com/macros/s/AKfycbwlDDCWWzOWYZsUpBU9uqsQ7aenQ469PF6s6FkNlBFS1_cJSU5njG9oQmuyELy5zlqzFg/exec';
+function credencialValida_(k){
+  k = String(k || '').trim();
+  if(k.length < 4) return false;
+  var cache = CacheService.getScriptCache();
+  var ck = 'auth_' + Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, k)).slice(0, 24);
+  var hit = cache.get(ck);
+  if(hit) return hit === '1';
+  var ok = false;
+  try{
+    var r = UrlFetchApp.fetch(PORTERO_EXEC + '?recurso=canje&board=IN&t=' + encodeURIComponent(k),
+      { muteHttpExceptions: true, followRedirects: true });
+    var j = JSON.parse(r.getContentText());
+    ok = !!(j && j.ok);
+  }catch(err){ ok = false; }  /* Portero inaccesible → fail-closed */
+  cache.put(ck, ok ? '1' : '0', ok ? 600 : 60);
+  return ok;
+}
+
 /* ============================ LECTURA ============================ */
 function doGet(e){
   var sec = securityConfig_();
   if(!sec.reads) return json({ ok:false, maintenance:true, error:"acceso temporalmente suspendido" });
+  var k = (e && e.parameter && e.parameter.k) || '';
+  if(!credencialValida_(k)) return json({ ok:false, error:'liga' });
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var out = {};
 
@@ -68,6 +95,7 @@ function doPost(e){
     var sec = securityConfig_();
     if(!sec.writes) return json({ ok:false, error:"escrituras temporalmente suspendidas" });
     var p = JSON.parse(e.postData.contents);
+    if(!credencialValida_(p.k || '')) return json({ ok:false, error:'liga' });
     if(!sec.secret || p.secret !== sec.secret) return json({ ok:false, error:"no autorizado" });
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
