@@ -1424,7 +1424,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       setBadge("loading");
       var url=CONFIG.SHEET_URL+(CONFIG.SHEET_URL.indexOf("?")<0?"?":"&")+"k="+encodeURIComponent(credencial())+"&cb="+Date.now();
       var ctrl=new AbortController(), t=setTimeout(function(){ctrl.abort();},CONFIG.FETCH_TIMEOUT);
-      fetch(url,{signal:ctrl.signal}).then(function(r){return r.json();}).then(function(j){
+      fetch(url,{signal:ctrl.signal,credentials:"omit"}).then(function(r){return r.json();}).then(function(j){
         clearTimeout(t);
         if(j&&j.error==="liga"){ credencialRechazada(); return; }
         if(j&&j.meta){ if(!j.meta.logo && window.__SNAP_LOGO__) j.meta.logo=window.__SNAP_LOGO__;
@@ -1799,7 +1799,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       payload.k=credencial();                                   /* credencial del Portero (lectura) */
       try{payload.secret=sessionStorage.getItem(WSEC_KEY)||"";}catch(e){payload.secret="";}  /* clave de escritura (la valida el servidor) */
       var ctrl=new AbortController(), t=setTimeout(function(){ctrl.abort();},CONFIG.FETCH_TIMEOUT);
-      return fetch(CONFIG.SHEET_URL,{method:"POST",body:JSON.stringify(payload),signal:ctrl.signal})
+      return fetch(CONFIG.SHEET_URL,{method:"POST",body:JSON.stringify(payload),signal:ctrl.signal,credentials:"omit"})
         .then(function(r){ clearTimeout(t); return r.json(); })
         .then(function(j){ if(j&&j.ok) return j; if(j&&j.error==="liga") credencialRechazada(); throw new Error((j&&j.error)||"rechazado"); });
     }
