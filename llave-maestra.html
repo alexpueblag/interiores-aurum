@@ -1493,9 +1493,25 @@ body::before{opacity:.25}
         '<p>Cargando proyectos…</p></div>'+
         '<div class="grid-houses">'+cards+'</div></div>';
     }
+    /* Estado honesto cuando el board aún no tiene backend conectado (SHEET_URL vacío)
+       y no hay caché local: en vez de girar en "Cargando proyectos…" para siempre,
+       decimos con claridad qué pasa y damos salida. Al pegar la URL /exec del Apps
+       Script en CONFIG.SHEET_URL, este estado desaparece solo. */
+    function renderLandingBackendPending(){
+      app.innerHTML='<div class="landing"><div class="landing-h fade">'+
+        '<p class="eyebrow">Aurum Arquitectos</p><h1>Diseño de Interiores Aurum</h1>'+
+        '<p>Estamos reconectando este tablero con su fuente de datos. '+
+        'Vuelve en un momento — no se perdió nada.</p>'+
+        '<p style="margin-top:14px"><a href="https://alexpueblag.github.io/yod-portal/os/" '+
+        'style="color:var(--gold,#c9a96e);text-decoration:none;font-weight:600">← Volver a YOD OS</a></p>'+
+        '</div></div>';
+    }
     /* ---- pantalla: landing de la firma (varias casas) ---- */
     function renderLanding(){
-      if(!DATA_READY) return renderLandingSkeleton();
+      if(!DATA_READY){
+        if(!CONFIG.SHEET_URL) return renderLandingBackendPending();  /* backend por conectar: no colgar en skeleton */
+        return renderLandingSkeleton();
+      }
       var m=AURUM.meta||{}, activeCover=imgUrl(m.heroRender);
       var cards=PROJECTS.map(function(pr){
         var cover=pr.cover?imgUrl(pr.cover):(pr.active?activeCover:"");
