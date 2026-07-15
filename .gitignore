@@ -1,0 +1,5 @@
+# Backend Apps Script — NO publicar (usa Script Properties para secretos)
+Code.gs
+.clasp.json
+.clasprc.json
+gas/
