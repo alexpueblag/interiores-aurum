@@ -818,7 +818,11 @@ body::before{opacity:.25}
           key: (r.key||r.clave||""),
           cover: (r.cover||r.img||r.portada||r.imagen||""),
           imgpos: (r.imgpos||r.acomodo||r.pos||""),   /* acomodo de la portada (top/center/bottom/contain…) editable desde el Sheet, igual que las piezas */
-          url: (r.url||r.liga||r.link||"")
+          url: (r.url||r.liga||r.link||""),
+          /* Carpeta de Drive del proyecto (planos, ejecutivo, etc.). Se administra
+             desde el Sheet: columna `drive` (o `planos`/`carpeta`) en la hoja Proyectos.
+             Cada residencia apunta a la SUYA; nada queda quemado en el HTML. */
+          drive: (r.drive||r.planos||r.carpeta||r.drive_url||"")
         };
       });
     }
@@ -976,6 +980,18 @@ body::before{opacity:.25}
       return String(d);
     }
 
+    /* Solo acepta carpetas/archivos de Google Drive por https. Cualquier otra cosa
+       (incluido `javascript:`) se descarta: el valor viene del Sheet y no debe poder
+       inyectar un esquema arbitrario en un href. */
+    function driveUrlSeguro(v){
+      var s=String(v||"").trim(); if(!s) return "";
+      try{
+        var u=new URL(s);
+        if(u.protocol!=="https:") return "";
+        if(u.hostname!=="drive.google.com" && u.hostname!=="docs.google.com") return "";
+        return u.href;
+      }catch(_e){ return ""; }
+    }
     function renderMast(){
       var m=AURUM.meta||{}, sp=tbl("spaces");
       var elems=tbl("products").length+tbl("lighting").length+tbl("hardware").length+tbl("equipment").length+tbl("finishes").length+tbl("carpentry").length;
@@ -993,6 +1009,14 @@ body::before{opacity:.25}
             (budget>0?'<span class="chip">Presupuesto <b>'+money(budget)+'</b></span>':'')+
             (AURUM.concept&&AURUM.concept.style?'<span class="chip">'+esc(AURUM.concept.style)+'</span>':'')+
           '</div>'+
+          (function(){
+            /* Botón a la carpeta de Drive del proyecto (planos y ejecutivo).
+               Aparece solo si la residencia tiene liga en el Sheet. */
+            var d=driveUrlSeguro((projectById(state.project)||{}).drive||m.drive);
+            return d ? '<a class="btn btn--solid" href="'+esc(d)+'" target="_blank" rel="noopener noreferrer" style="margin-top:16px;display:inline-flex;text-decoration:none">'+
+              '<svg viewBox="0 0 24 24"><path d="M9 3h6l6 10-3 5H6l-3-5z"/><path d="M9 3 3 13"/><path d="M15 3l6 10"/></svg>'+
+              '<span class="lbl">Ver planos en Drive</span></a>' : '';
+          })()+
         '</div>'+
         '<figure class="herofig">'+(hero?'<img src="'+esc(hero)+'" alt="Render principal" style="object-position:'+esc(m.heroRenderPos||"center center")+'">':'<div class="ph">Render principal</div>')+'</figure>'+
       '</section>'+
