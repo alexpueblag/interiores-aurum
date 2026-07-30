@@ -744,7 +744,7 @@ body::before{opacity:.25}
        en Script Properties. Este HTML ya no contiene ningún secreto. */
     var CONFIG = {
       SHEET_URL: "https://script.google.com/macros/s/AKfycbyEr0MA48NgxPMJ1-i2FFblxQfLV_vocdsiBVk1I_k70FumxebwJSR-yGpGuP6n4yR_/exec",
-      ENTRY_KEY: "Mona",        /* clave suave por proyecto (detrás del Portero) */
+      ENTRY_KEY: "",            /* sin respaldo quemado: la clave vive en la columna `key` de la hoja Proyectos */
       FETCH_TIMEOUT: 10000
     };
     var PORTERO_LSK = "pyod_clave_v1";   /* credencial que escribe portero.js */
@@ -1474,7 +1474,9 @@ body::before{opacity:.25}
       var inp=document.getElementById("gateInput"); if(!inp) return;
       var pr=projectById(state.project)||{};
       var key=String(pr.key||CONFIG.ENTRY_KEY||"").toLowerCase();
-      if(inp.value.trim().toLowerCase()===key){
+      /* Fail-closed: sin clave configurada NADIE entra. Antes, un proyecto sin `key`
+         dejaba key="" y el campo vacío abría el tablero. */
+      if(key && inp.value.trim().toLowerCase()===key){
         unlock(state.project);
         state.screen="house"; state.view="espacios"; state.space=null; state.conceptOpen=false; render();
       } else {
