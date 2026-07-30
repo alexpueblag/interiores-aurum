@@ -798,7 +798,9 @@ body::before{opacity:.25}
        Este arreglo es SOLO un salvavidas mínimo por si el Sheet no responde: no agregar
        aquí residencias ni fachadas — todo eso se administra en la hoja Proyectos. */
     var PROJECTS = [
-      { id:"rnm", name:"Residencia Navarro Muñoz", sub:"Las Riberas · Hermosillo", active:true, key:"Mona" }
+      /* Sin `key`: la clave NUNCA vive en el HTML (repo público). Si el Sheet no responde,
+         el proyecto se lista pero el gate queda cerrado hasta que vuelva la hoja Proyectos. */
+      { id:"rnm", name:"Residencia Navarro Muñoz", sub:"Las Riberas · Hermosillo", active:true }
     ];
     function projectById(id){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id===id) return PROJECTS[i]; } return null; }
     function unlockedIds(){ try{ return JSON.parse(localStorage.getItem(UNLOCK_KEY))||[]; }catch(e){ return []; } }
