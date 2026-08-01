@@ -1675,13 +1675,33 @@ body::before{opacity:.25}
         dz.innerHTML='<button class="dz-pill" id="dzBtn"><svg viewBox="0 0 24 24"><path d="M4 20h4L18.5 9.5l-4-4L4 16v4z"/></svg><span class="lbl">Diseñadora</span></button>';
       }
     }
+    /* Editar YA NO pide contraseña: manda tu cuenta del Portero. Editan Dirección
+       (admin) y Proyectos/Sayri (editor); los clientes solo leen. El servidor
+       vuelve a verificar el rol en cada escritura — esto es solo la puerta visual. */
+    var PORTERO_EXEC_FRONT="https://script.google.com/macros/s/AKfycbwlDDCWWzOWYZsUpBU9uqsQ7aenQ469PF6s6FkNlBFS1_cJSU5njG9oQmuyELy5zlqzFg/exec";
+    var ROLES_EDITORES_FRONT={admin:1,editor:1,proyectos:1,direccion:1};
+    function puedeEditarCuenta(){
+      var k=credencial(); if(!k) return Promise.resolve({ok:false,motivo:"sin sesión"});
+      return fetch(PORTERO_EXEC_FRONT+"?recurso=canje&t="+encodeURIComponent(k),{credentials:"omit",cache:"no-store"})
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(!j||!j.ok) return {ok:false,motivo:"sesión no válida"};
+          var rol=String(j.rol||"vista").toLowerCase().trim();
+          return {ok:!!ROLES_EDITORES_FRONT[rol],rol:rol,nombre:String(j.nombre||"")};
+        })
+        .catch(function(){return {ok:false,motivo:"sin conexión"};});
+    }
     function tryDesigner(){
-      /* La clave ya no se compara en el cliente: se guarda y el SERVIDOR la
-         valida en cada escritura (vive en Script Properties del Apps Script). */
-      var k=prompt("Clave de diseñadora:"); if(k==null) return;
-      k=String(k).trim(); if(!k){ alert("Escribe la clave."); return; }
-      try{sessionStorage.setItem(WSEC_KEY,k);}catch(e){}
-      state.designer=true; try{sessionStorage.setItem(DESIGNER_FLAG,"1");}catch(e){} render();
+      puedeEditarCuenta().then(function(q){
+        if(!q.ok){
+          alert("Tu cuenta no tiene permiso de edición"+(q.motivo?" ("+q.motivo+")":"")+".\n\nEditan Dirección y Proyectos. Si necesitas editar, pídelo a Dirección.");
+          return;
+        }
+        state.designer=true; state.designerName=q.nombre;
+        try{sessionStorage.setItem(DESIGNER_FLAG,"1");}catch(e){}
+        render();
+        showToast("Edición activada — "+(q.nombre||"tu cuenta"));
+      });
     }
     function exitDesigner(){ state.designer=false; try{sessionStorage.removeItem(DESIGNER_FLAG);sessionStorage.removeItem(WSEC_KEY);}catch(e){} render(); }
 
@@ -1853,8 +1873,7 @@ body::before{opacity:.25}
     /* --- POST al Sheet (body simple para evitar preflight CORS) --- */
     function postSheet(payload){
       if(!CONFIG.SHEET_URL) return Promise.reject(new Error("sin URL"));
-      payload.k=credencial();                                   /* credencial del Portero (lectura) */
-      try{payload.secret=sessionStorage.getItem(WSEC_KEY)||"";}catch(e){payload.secret="";}  /* clave de escritura (la valida el servidor) */
+      payload.k=credencial();   /* credencial del Portero: identifica Y autoriza (el servidor verifica el rol) */
       var ctrl=new AbortController(), t=setTimeout(function(){ctrl.abort();},CONFIG.FETCH_TIMEOUT);
       return fetch(CONFIG.SHEET_URL,{method:"POST",body:JSON.stringify(payload),signal:ctrl.signal,credentials:"omit"})
         .then(function(r){ clearTimeout(t); return r.json(); })
