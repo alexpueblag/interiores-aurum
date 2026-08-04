@@ -757,7 +757,20 @@ body::before{opacity:.25}
 
     /* ============ DATA ============ */
     var AURUM = window.AURUM || {};
-    var SEL_KEY = "aurum_sel_v2", ROUTE_KEY = "aurum_route_v1", CACHE_KEY = "aurum_cache_v1";
+    var SEL_KEY = "aurum_sel_v2", ROUTE_KEY = "aurum_route_v1", CACHE_KEY = "aurum_cache_v1", CACHE_TS_KEY = "aurum_cache_ts_v1";
+    /* Edad de la copia guardada: se muestra junto al dato para que un presupuesto
+       de hace meses no se confunda con uno de hoy. */
+    function cacheTs(){ try{ var v=localStorage.getItem(CACHE_TS_KEY); return v?Number(v):0; }catch(e){ return 0; } }
+    function edadTexto(ts){
+      if(!ts) return "de fecha desconocida";
+      var mn=Math.floor((Date.now()-ts)/60000);
+      if(mn<2) return "de hace un momento";
+      if(mn<60) return "de hace "+mn+" min";
+      var h=Math.floor(mn/60); if(h<24) return "de hace "+h+(h===1?" hora":" horas");
+      var d=Math.floor(h/24); if(d<31) return "de hace "+d+(d===1?" día":" días");
+      var me=Math.floor(d/30); return "de hace "+me+(me===1?" mes":" meses");
+    }
+    function fechaDatos(){ var t=cacheTs(); return t?new Date(t).toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"}):null; }
 
     var SECTIONS = [
       {key:"concepto",   label:"Concepto",      sub:"Dirección de diseño",  ac:"#725d54", kind:"concept"},
@@ -1432,7 +1445,10 @@ body::before{opacity:.25}
         });
         html+='<p class="ptot">Total de la selección · '+money(grand)+'</p>';
       }
+      var _fd=fechaDatos();
       html+='<p class="pfoot">Generado el '+new Date().toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"})+(m.version?' · v'+esc(m.version):'')+'</p>';
+      /* El sello de generación no debe hacer pasar por actuales unos precios viejos. */
+      html+='<p class="pfoot">'+(_fd?('Precios y avances al '+esc(_fd)):'Precios tomados de una copia local sin fecha registrada')+'</p>';
       host.innerHTML=html;
     }
     function catOf(p){
@@ -1449,7 +1465,7 @@ body::before{opacity:.25}
     function agoLabel(){ if(!LAST_FETCH) return ""; var mn=Math.round((Date.now()-LAST_FETCH)/60000); return mn<=0?"justo ahora":("hace "+mn+" min"); }
     function setBadge(s){
       var b=document.getElementById("badge");
-      var labels={live:"En vivo",snapshot:"Local · snapshot",cache:"Cache local",loading:"Actualizando…",error:"Sin conexión"};
+      var labels={live:"En vivo",snapshot:"Local · snapshot",cache:"Copia guardada "+edadTexto(cacheTs()),loading:"Actualizando…",error:"Sin conexión"};
       var txt=labels[s]||s; if(s==="live"&&LAST_FETCH) b.title="Datos actualizados "+agoLabel();
       b.setAttribute("data-s",s); b.querySelector(".t").textContent=txt;
     }
@@ -1469,7 +1485,7 @@ body::before{opacity:.25}
         if(j&&j.meta){ if(!j.meta.logo && window.__SNAP_LOGO__) j.meta.logo=window.__SNAP_LOGO__;
           LAST_FETCH=Date.now();
           var same=false; try{ same=(JSON.stringify(j)===JSON.stringify(AURUM)); }catch(e){}
-          AURUM=j; window.AURUM=j; try{localStorage.setItem(CACHE_KEY,JSON.stringify(j));}catch(e){}
+          AURUM=j; window.AURUM=j; try{localStorage.setItem(CACHE_KEY,JSON.stringify(j));localStorage.setItem(CACHE_TS_KEY,String(Date.now()));}catch(e){}
           if(j._projects && j._projects.length) PROJECTS=normalizeProjects(j._projects);
           var firstData=!DATA_READY; DATA_READY=true;
           if(!same || firstData){ loadSelection(); render(); }
